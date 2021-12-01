@@ -1,0 +1,13 @@
+{
+    "user":1,
+    "company": 1, 
+    "collect_date":"30-12-2020", 
+    "part":"turbo", 
+    "index":"12345432", 
+    "quantity":"1", 
+    "price":"899.99", 
+    "brand_number":"322", 
+    "note":"cześć regenerowana"
+}
+
+

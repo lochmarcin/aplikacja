@@ -1,0 +1,16 @@
+-- SELECT * from users
+select * from todo
+-- select * from company
+
+-- INSERT INTO todo (users, company, collect_date, part, indexx, quantity, price, band_number, note) 
+-- VALUES (1,1,'31-12-2021','1','2','1','800.00','234','chuj')
+
+-- INSERT INTO company (name_comp, town, street, number_house, post_code, phone, email) 
+-- VALUES ('Omega', 'Pilzno', '', '92A', '45-765', '888555222', 'omega@wp.pl')
+
+-- INSERT INTO users (firstname, lastname, user_name)
+-- VALUES ('Jan', 'Kowalski', 'jan.kowalski')
+
+-- DELETE FROM todo where id=1
+-- DELETE FROM users where id=1
+-- DELETE FROM company where id=1
