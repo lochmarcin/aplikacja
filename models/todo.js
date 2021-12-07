@@ -40,6 +40,9 @@ const Todo = db.define('todo', {
     },
     updatedAt: {
         type: Sequelize.DATE
+    },
+    done: {
+        type: Sequelize.BOOLEAN
     }
 })
 

@@ -31,9 +31,6 @@ const Company = db.define('companies',{
     },
     email: {
         type: Sequelize.STRING
-    },
-    done: {
-        type: Sequelize.BOOLEAN
     }
 })
 
