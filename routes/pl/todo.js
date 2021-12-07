@@ -55,6 +55,32 @@ router.get('/getDone', (req, res)=>{
 
 
 
+// Aktualizacja jednego todo po id NA DONE TRUE
+router.put("/update/:id", async(req,res)=> {
+    console.log(req.body)
+    const param = req.params.id 
+    console.log('Param: ' + param)
+
+    let {users, company, collect_date, part, indexx, quantity, price, band_number, note} = req.body
+    
+    await Todo.update({users, company, collect_date, part, indexx, quantity, price, band_number, note},
+        {
+        where: {
+            id: param
+        }
+    })
+    .then(todos=> {
+        console.log((todos[0]=1)? "looks good" : "sometching is wrong")
+        res.status(200).send((todos[0]=1)? "looks good" : "sometching is wrong")
+    })
+    .catch(err => {
+        console.log('Error: ' + err)
+        res.sendStatus(400)
+    })
+
+})
+
+
 
 // Dodanie jednego TODO 
 router.post("/add", (req,res)=>{
