@@ -7,10 +7,36 @@ const Todo = require('../../models/todo')
 
 
 
-// GET ALL TODOS ---------- GET ALL TODOS ---------- GET ALL TODOS 
-router.get('/get', (req,res)=>{
+// GET ALL TODOS WITCH DONE IS FALSE ---------- GET ALL TODOS ---------- GET ALL TODOS 
+router.get('/get', (req, res)=>{
     console.log("get all todos")
     Todo.findAll({
+        where: {
+            done: false
+        },
+        order: [
+            ['collect_date', 'ASC']
+        ]
+    })
+    .then(todo => {
+        //todo = JSON.stringify(todo)
+        // console.log(todo[0].dataValues.price)
+        console.log(todo)
+        res.status(200).json(todo)
+    })
+    .catch(err => {
+        console.log('Error: ' + err)
+        res.sendStatus(400)
+    })
+})
+
+// GET ALL TODOS WITCH DONE IS FALSE ---------- GET ALL TODOS ---------- GET ALL TODOS 
+router.get('/getDone', (req, res)=>{
+    console.log("get all todos")
+    Todo.findAll({
+        where: {
+            done: true
+        },
         order: [
             ['collect_date', 'ASC']
         ]
@@ -28,6 +54,8 @@ router.get('/get', (req,res)=>{
 })
 
 
+
+
 // Dodanie jednego TODO 
 router.post("/add", (req,res)=>{
     console.log("add todo:")
@@ -35,9 +63,9 @@ router.post("/add", (req,res)=>{
     console.log(req.body)
     
     let {users, company, collect_date, part, indexx, quantity, price, band_number, note, condition} = req.body
-    
+    let done = false
 
-    Todo.create({users, company, collect_date, part, indexx, quantity, price, band_number, note, condition
+    Todo.create({users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, done
     })
     .then(todo => {
         console.log("Powinoo wysłać")
