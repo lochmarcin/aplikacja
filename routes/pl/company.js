@@ -4,6 +4,15 @@ const router = express.Router()
 const db = require('../../config/database')
 const Company = require('../../models/company')
 
+// NOT ACTUAL !!
+// NOT ACTUAL !!
+// NOT ACTUAL !!
+// NOT ACTUAL !!
+// NOT ACTUAL !!
+// NOT ACTUAL !!
+// NOT ACTUAL !!
+
+
 // Add one COMPANY
 router.post("/add", (req,res) => {
     console.log(req.body)

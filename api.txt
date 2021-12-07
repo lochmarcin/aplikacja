@@ -1,0 +1,22 @@
+// Pobieranie wszystkich
+127.0.0.1:5000/todo/get
+
+//Dodawanie jednego 
+127.0.0.1:5000/todo/add
+    {
+    "users":1,
+    "company": 3, 
+    "collect_date":"2021-12-01", 
+    "part":"przekładnia", 
+    "indexx":"223", 
+    "quantity":"1", 
+    "price":"123.45", 
+    "band_number":"2233", 
+    "note":"cześć regenerowana"
+    }
+
+// Pobieranie jednego po parametrze id -> /13
+127.0.0.1:5000/todo/getOne/13
+
+
+127.0.0.1:5000/todo/update/:id

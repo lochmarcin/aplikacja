@@ -6,7 +6,7 @@ const Todo = db.define('todo', {
         type: Sequelize.INTEGER
     },
     company: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
     },
     part: {
         type: Sequelize.STRING
@@ -31,6 +31,9 @@ const Todo = db.define('todo', {
     },
     collect_date: {
         type: Sequelize.DATE
+    },
+    condition: {
+        type: Sequelize.STRING
     },
     createdAt: {
         type: Sequelize.DATE

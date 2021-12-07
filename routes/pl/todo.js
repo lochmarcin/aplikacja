@@ -7,7 +7,7 @@ const Todo = require('../../models/todo')
 
 
 
-
+// GET ALL TODOS ---------- GET ALL TODOS ---------- GET ALL TODOS 
 router.get('/get', (req,res)=>{
     console.log("get all todos")
     Todo.findAll({
@@ -34,10 +34,10 @@ router.post("/add", (req,res)=>{
     console.log("----------------------------")
     console.log(req.body)
     
-    let {users, company, collect_date, part, indexx, quantity, price, band_number, note} = req.body
+    let {users, company, collect_date, part, indexx, quantity, price, band_number, note, condition} = req.body
     
 
-    Todo.create({users, company, collect_date, part, indexx, quantity, price, band_number, note
+    Todo.create({users, company, collect_date, part, indexx, quantity, price, band_number, note, condition
     })
     .then(todo => {
         console.log("Powinoo wysłać")
