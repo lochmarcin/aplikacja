@@ -57,7 +57,7 @@ router.get('/getDone', (req, res)=>{
 
 // Aktualizacja jednego todo po id NA DONE TRUE
 router.put("/updateDone/:id", async(req,res)=> {
-    console.log(req.params.id)
+    console.log("Param: " + req.params.id)
     
 
     await Todo.update({done:"true"},
@@ -78,7 +78,7 @@ router.put("/updateDone/:id", async(req,res)=> {
 
 // Aktualizacja jednego todo po id NA DONE TRUE
 router.put("/updateNotDone/:id", async(req,res)=> {
-    console.log(req.params.id)
+    console.log("Param: " + req.params.id)
 
 
     await Todo.update({done:"false"},
