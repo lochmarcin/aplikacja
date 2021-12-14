@@ -99,13 +99,36 @@ router.put("/updateNotDone/:id", async(req,res)=> {
 
 
 // Dodanie jednego TODO 
-router.post("/add", (req,res)=>{
+router.post("/addNew", (req,res)=>{
     console.log("add todo:")
     console.log("----------------------------")
     console.log(req.body)
     
-    let {users, company, collect_date, part, indexx, quantity, price, band_number, note, condition} = req.body
+    let {users, company, collect_date, part, indexx, quantity, price, band_number, note} = req.body
     let done = false
+    let condition = "nowa/używana"
+
+    Todo.create({users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, done
+    })
+    .then(todo => {
+        console.log("Powinoo wysłać")
+        res.sendStatus(200)
+    })
+    .catch(err => {
+        console.log('Error: ' + err)
+        res.sendStatus(400)
+    })
+})
+
+// Dodanie jednego TODO 
+router.post("/addReg", (req,res)=>{
+    console.log("add todo:")
+    console.log("----------------------------")
+    console.log(req.body)
+    
+    let {users, company, collect_date, part, indexx, quantity, price, band_number, note} = req.body
+    let done = false
+    let condition = "regenerowana"
 
     Todo.create({users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, done
     })
