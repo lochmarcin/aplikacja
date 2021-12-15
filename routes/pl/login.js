@@ -20,8 +20,8 @@ router.get('/api/users', authenticate, (req, res) => {
 router.get("/me", async (req, res) => {
     authenticate(req, res)
     console.log("req.user: " + req.user.username)
-  
-  })
+
+})
 
 
 
@@ -85,7 +85,7 @@ router.post('/login', async (req, res) => {
                 username: username
             }
         })
-        if(result == null)
+        if (result == null)
             res.status(500).send("Błędne dane logowania!")
 
 
@@ -97,44 +97,50 @@ router.post('/login', async (req, res) => {
         console.log(e)
     }
 
-    const validPassword = await bcrypt.compare(password, dbPassword)
-    if (validPassword) {
-        const accessToken = jwt.sign(
-            {
-                user_id: result.dataValues.id, 
-                username: result.dataValues.username
-            }, 
-            process.env.TOKEN_SECRET, 
-            { 
-                expiresIn: '30d' 
+    try {
+        const validPassword = await bcrypt.compare(password, dbPassword)
+        if (validPassword) {
+            const accessToken = jwt.sign(
+                {
+                    user_id: result.dataValues.id,
+                    username: result.dataValues.username
+                },
+                process.env.TOKEN_SECRET,
+                {
+                    expiresIn: '30d'
+                })
+
+            const refreshToken = jwt.sign({ user_id: result.dataValues.id, username: result.dataValues.username }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: 525600 })
+
+
+            // Save refresh Token in DB
+            try {
+                await User.update({
+                    refreshToken: refreshToken
+                },
+                    {
+                        where: {
+                            username: username
+                        }
+                    })
+            } catch (e) {
+                res.sendStatus(400)
+            }
+
+            res.cookie('JWT', accessToken, {
+                maxAge: 86400000,
+                httpOnly: true,
             })
 
-        const refreshToken = jwt.sign({ user_id: result.dataValues.id, username: result.dataValues.username }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: 525600 })
-
-        // Save refresh Token in DB
-        try {
-            await User.update({
-                refreshToken: refreshToken
-            },
-            {
-                where: {
-                    username: username
-                }
-            })
-        } catch (e) {
-            res.sendStatus(400)
+            res.send({ accessToken, refreshToken })
         }
-
-        res.cookie('JWT', accessToken, {
-            maxAge: 86400000,
-            httpOnly: true,
-        })
-
-        res.send({ accessToken, refreshToken })
+        else {
+            res.status(500).send("Błędne dane logowania!")
+        }
+    } catch (e) {
+        console.log("Error: " + e)
     }
-    else{
-        res.status(500).send("Błędne dane logowania!")
-    }
+
 })
 
 router.post('/refresh', (req, res) => {
@@ -154,12 +160,12 @@ router.post('/refresh', (req, res) => {
 
     const accessToken = jwt.sign(
         {
-            user_id: result.dataValues.id, 
+            user_id: result.dataValues.id,
             username: result.dataValues.username
-        }, 
-        process.env.TOKEN_SECRET, 
-        { 
-            expiresIn: '30d' 
+        },
+        process.env.TOKEN_SECRET,
+        {
+            expiresIn: '30d'
         })
 
     res.send({ accessToken })
@@ -193,9 +199,9 @@ function authenticate(req, res, next) {
     jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
         if (err)
             return res.sendStatus(403)
-        
+
         req.user = user
-        console.log("autchenticate: " + user.username )
+        console.log("autchenticate: " + user.username)
         return (req.user)
 
     })
@@ -203,12 +209,12 @@ function authenticate(req, res, next) {
 
 router.delete("/logout", async (req, res) => {
     res.cookie('JWT', null);
-  
+
     console.log(req.user)
     res.status(200).json({
-      message: "Logged out successfully"
+        message: "Logged out successfully"
     })
-  })
+})
 
 
 module.exports = router
