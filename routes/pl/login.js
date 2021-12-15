@@ -100,7 +100,7 @@ router.post('/login', async (req, res) => {
     
         const validPassword = await bcrypt.compare(password, dbPassword)
         if (validPassword) {
-            try {
+           
             const accessToken = jwt.sign(
                 {
                     user_id: result.dataValues.id,
@@ -112,9 +112,7 @@ router.post('/login', async (req, res) => {
                 })
 
             const refreshToken = jwt.sign({ user_id: result.dataValues.id, username: result.dataValues.username }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: 525600 })
-        } catch (e) {
-            console.log("Error: " + e)
-        }
+        
 
 
             // Save refresh Token in DB
