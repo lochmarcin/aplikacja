@@ -19,7 +19,13 @@ router.get('/api/users', authenticate, (req, res) => {
 
 router.get("/me", async (req, res) => {
     authenticate(req, res)
-    console.log("req.user: " + req.user.username)
+    if(req.user.username)
+        console.log("req.user: " + req.user.username)
+    else
+    {
+        console.log("Brak zalogowanego uzytkownika")
+        res.send(500).send("Brak zalogowanego uzytkownika")
+    }
 
 })
 
@@ -134,7 +140,7 @@ router.post('/login', async (req, res) => {
                 httpOnly: true,
             })
 
-            res.send({ accessToken, refreshToken })
+            res.status(200).json({ accessToken, refreshToken })
         }
         else {
             res.send("Błędne dane logowania!")
