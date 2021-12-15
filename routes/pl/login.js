@@ -19,12 +19,12 @@ router.get('/api/users', authenticate, (req, res) => {
 
 router.get("/me", async (req, res) => {
     authenticate(req, res)
-    if(req.user.username)
-        console.log("req.user: " + req.user.username)
-    else
-    {
+    if (req.user.username == null) {
         console.log("Brak zalogowanego uzytkownika")
         res.send(500).send("Brak zalogowanego uzytkownika")
+    }
+    else {
+        console.log("req.user: " + req.user.username)
     }
 
 })
@@ -103,49 +103,50 @@ router.post('/login', async (req, res) => {
         console.log(e)
     }
 
-    
-        const validPassword = await bcrypt.compare(password, dbPassword)
-        if (validPassword) {
-           
-            const accessToken = jwt.sign(
-                {
-                    user_id: result.dataValues.id,
-                    username: result.dataValues.username
-                },
-                process.env.TOKEN_SECRET,
-                {
-                    expiresIn: '30d'
-                })
 
-            const refreshToken = jwt.sign({ user_id: result.dataValues.id, username: result.dataValues.username }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: 525600 })
-        
+    const validPassword = await bcrypt.compare(password, dbPassword)
+    if (validPassword) {
 
-
-            // Save refresh Token in DB
-            try {
-                await User.update({
-                    refreshToken: refreshToken
-                },
-                    {
-                        where: {
-                            username: username
-                        }
-                    })
-            } catch (e) {
-                res.sendStatus(400)
-            }
-
-            res.cookie('JWT', accessToken, {
-                maxAge: 86400000,
-                httpOnly: true,
+        const accessToken = jwt.sign(
+            {
+                user_id: result.dataValues.id,
+                username: result.dataValues.username
+            },
+            process.env.TOKEN_SECRET,
+            {
+                expiresIn: '30d'
             })
 
-            res.status(200).json({ accessToken, refreshToken })
+        const refreshToken = jwt.sign({ user_id: result.dataValues.id, username: result.dataValues.username }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: 525600 })
+
+
+
+        // Save refresh Token in DB
+        try {
+            await User.update({
+                refreshToken: refreshToken
+            },
+                {
+                    where: {
+                        username: username
+                    }
+                })
+        } catch (e) {
+            res.sendStatus(400)
         }
-        else {
-            res.send("Błędne dane logowania!")
-        }
-    
+
+        res.cookie('JWT', accessToken, {
+            maxAge: 86400000,
+            httpOnly: true,
+        })
+        res.status(200).json({accessToken})
+        console.log("Zalogowano!")
+
+    }
+    else {
+        res.send("Błędne dane logowania!")
+    }
+
 
 })
 
@@ -202,6 +203,7 @@ function authenticate(req, res, next) {
 
     if (token === null)
         return res.sendStatus(401)
+
     jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
         if (err)
             return res.sendStatus(403)
