@@ -84,6 +84,8 @@ router.post('/login', async (req, res) => {
                 username: username
             }
         })
+        if(result == null)
+            res.status(500).send("Błędne dane logowania!")
 
         dbPassword = result.dataValues.password
         console.log(dbPassword)
