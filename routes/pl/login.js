@@ -139,7 +139,8 @@ router.post('/login', async (req, res) => {
             maxAge: 86400000,
             httpOnly: true,
         })
-        res.status(200).json({accessToken})
+        res.status(200).json({
+            token: accessToken})
         console.log("Zalogowano!")
 
     }
