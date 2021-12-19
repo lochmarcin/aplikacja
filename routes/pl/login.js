@@ -5,16 +5,19 @@ let User = require('../../models/users')
 const cookieParser = require('cookie-parser')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const authenticate = require('./../../services/authenticate')
+
+
 
 router.use(express.json())
 router.use(cookieParser())
 router.use(express.urlencoded({ extended: true }))
 
-router.get('/api/users', authenticate, (req, res) => {
-    const users = [{ id: 23213123, name: 'Adam' }]
+// router.get('/api/users', authenticate, (req, res) => {
+//     const users = [{ id: 23213123, name: 'Adam' }]
 
-    res.send(users)
-})
+//     res.send(users)
+// })
 
 
 router.get("/me", async (req, res) => {
@@ -200,23 +203,23 @@ router.post('/refresh', (req, res) => {
 //     })
 // }
 
-function authenticate(req, res, next) {
+// function authenticate(req, res, next) {
 
-    const token = req.cookies.JWT
+//     const token = req.cookies.JWT
 
-    if (token === null)
-        return res.sendStatus(401)
+//     if (token === null)
+//         return res.sendStatus(401)
 
-    jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-        if (err)
-            return res.sendStatus(403)
+//     jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+//         if (err)
+//             return res.sendStatus(403)
 
-        req.user = user
-        console.log("autchenticate: " + user.username)
-        return (req.user)
+//         req.user = user
+//         console.log("autchenticate: " + user.username)
+//         return (req.user)
 
-    })
-}
+//     })
+// }
 
 router.delete("/logout", async (req, res) => {
     res.cookie('JWT', null);

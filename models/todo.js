@@ -43,6 +43,9 @@ const Todo = db.define('todo', {
     },
     done: {
         type: Sequelize.BOOLEAN
+    },
+    whoDone: {
+        type: Sequelize.STRING
     }
 })
 
