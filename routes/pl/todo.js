@@ -98,7 +98,7 @@ router.put("/updateNotDone/:id", async(req,res)=> {
 })
 
 
-// Dodanie jednego TODO 
+// Dodanie jednego TODO NOWa częśc
 router.post("/addNew", (req,res)=>{
     console.log("add todo:")
     console.log("----------------------------")
@@ -120,7 +120,7 @@ router.post("/addNew", (req,res)=>{
     })
 })
 
-// Dodanie jednego TODO 
+// Dodanie jednego TODO Regenerowana 
 router.post("/addReg", (req,res)=>{
     console.log("add todo:")
     console.log("----------------------------")
@@ -145,7 +145,7 @@ router.post("/addReg", (req,res)=>{
 // Pobieranie jednego TODO po id
 router.get('/getOne/:id', (req,res)=>{
     console.log("get one todos")
-    console.log("------------------------------------")
+    console.log("--------------------------------------------------------------------------")
     console.log(req.params.id)
     
     Todo.findAll({
