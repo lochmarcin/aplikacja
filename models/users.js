@@ -14,6 +14,12 @@ const User = db.define('user', {
     password: {
         type: Sequelize.STRING
     },
+    isEditor: {
+        type: Sequelize.BOOLEAN
+    },
+    isViewer: {
+        type: Sequelize.BOOLEAN
+    },
     accessToken: {
         type: Sequelize.STRING
     },

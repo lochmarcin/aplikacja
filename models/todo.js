@@ -2,16 +2,10 @@ const Sequelize = require('sequelize')
 const db = require('../config/database')
 
 const Todo = db.define('todo', {
-    users: {
-        type: Sequelize.INTEGER
-    },
     company: {
         type: Sequelize.STRING
     },
     part: {
-        type: Sequelize.STRING
-    },
-    users: {
         type: Sequelize.STRING
     },
     indexx: {

@@ -35,7 +35,7 @@ router.get("/me", async (req, res) => {
 
 
 router.post("/register", async (req, res) => {
-    const { firstname, lastname, username, password } = req.body
+    const { firstname, lastname, username, password, isEditor } = req.body
     console.log(req.body)
 
     const hash = await bcrypt.hash(password, 10)
@@ -44,7 +44,8 @@ router.post("/register", async (req, res) => {
             firstname: firstname,
             lastname: lastname,
             username: username,
-            password: hash
+            password: hash,
+            isEditor: isEditor
         })
 
         res.status(200).send("Użytkownik dodany!")
@@ -144,7 +145,9 @@ router.post('/login', async (req, res) => {
         })
         console.log("Wysłałem tokena: " + accessToken)
         res.status(200).json({
-            token: accessToken})
+            isEditor: result.dataValues.isEditor,
+            token: accessToken
+        })
 
         console.log("Zalogowano!")
 
