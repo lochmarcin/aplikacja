@@ -47,7 +47,7 @@ router.post("/register", async (req, res) => {
             password: hash,
             isEditor: isEditor
         })
-
+  
         res.status(200).send("Użytkownik dodany!")
     } catch (e) {
         console.log(e)
