@@ -200,6 +200,13 @@ router.get('/getOne/:id', (req, res) => {
         }
     })
         .then(todo => {
+            let collect_date = `${todo[0].dataValues.collect_date}`
+            let dates=collect_date.split('-') 
+            console.log(dates)
+            todo[0].dataValues.day=dates[2]
+            todo[0].dataValues.month=dates[1]
+            todo[0].dataValues.year=dates[0]
+
             console.log(todo[0].dataValues)
             res.status(200).json(todo[0].dataValues)
         })
