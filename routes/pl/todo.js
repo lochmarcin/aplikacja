@@ -224,7 +224,10 @@ router.put("/update/:id", async (req, res) => {
     console.log('Param: ' + param)
 
 
-    let { users, company, collect_date, part, indexx, quantity, price, band_number, note } = req.body
+    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year } = req.body
+
+    let collect_date = `${year}-${month}-${day}`
+    console.log("Collect_date: " + collect_date)
 
     await Todo.update({ users, company, collect_date, part, indexx, quantity, price, band_number, note },
         {
