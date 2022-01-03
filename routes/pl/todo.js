@@ -226,6 +226,16 @@ router.put("/update/:id", async (req, res) => {
 
     let { users, company, part, indexx, quantity, price, band_number, note, day, month, year } = req.body
 
+    let check_day_length = day.toString().length
+    let check_month_length = month.toString().length
+
+    if(check_day_length == 1 ){
+        day = '0' + day
+    }
+    if(check_month_length == 1 ){
+        month = '0' + month
+    }
+
     let collect_date = `${year}-${month}-${day}`
     console.log("Collect_date: " + collect_date)
 
