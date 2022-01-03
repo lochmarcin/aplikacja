@@ -267,55 +267,6 @@ router.delete("/delete/:id", async (req, res) => {
 })
 
 
-// SQL 
-{
-    // router.post('/add', async(req,res)=>{
-    //     console.log('body', req.body)
-
-    //     try {
-    //         const result = await db.query("INSERT INTO todo (users, company, collect_date, part, indexx, quantity, price, band_number, note) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning *", [req.body.user, req.body.company, req.body.collect_date, req.body.part, req.body.index, req.body.quantity, req.body.price, req.body.band_number, req.body.note])
-    //         console.log(result.rows[0])
-
-    //         res.status(200).json({
-    //             status: "success",
-    //             todo: result.rows[0],
-    //         })
-    //     } catch (err) {
-    //         console.log(err)
-    //     }
-    // })
-
-
-    // router.get('/show', async(req, res)=>{
-    //     try {
-    //         const result = await db.query("INSERT INTO todo (users, company, collect_date, part, indexx, quantity, price, band_number, note) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning *", [req.body.user, req.body.company, req.body.collect_date, req.body.part, req.body.index, req.body.quantity, req.body.price, req.body.band_number, req.body.note])
-    //         console.log(result.rows[0])
-
-    //         res.status(200).json({
-    //             status: "success",
-    //             todo: result.rows[0]
-    //         })
-    //     } catch (err) {
-    //         console.log(err)
-    //     }
-    // })
-
-    // router.post('/name', async (req, res)=>{
-    //     console.log('name')
-    //     try {
-    //         const result = await db.query("INSERT INTO name (name) VALUES ($1) returning *",
-    //         ["dupa"])
-    //         console.log(result.rows)
-    //         res.status(200).json({
-    //             status: "success",
-    //             name: result.rows
-    //         })
-    //     } catch (err) {
-    //         console.log(err)
-    //     }
-    // })
-}
-
 router.use('/', (req, res) => {
     res.send("jessteś  w todo ")
 })
