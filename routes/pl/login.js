@@ -86,6 +86,8 @@ router.post('/login', async (req, res) => {
     const username = req.body.username
     const password = req.body.password
 
+    console.log("username podane: " + username)
+
     console.log("Hasło podane: " + password)
     let dbPassword
     let result
@@ -95,8 +97,11 @@ router.post('/login', async (req, res) => {
                 username: username
             }
         })
-        if (result == null)
-            res.status(500).send("Błędne dane logowania!")
+        console.log("Znaleziono: " + result)
+        if (result == null){
+            res.send("Błędne dane logowania!")
+            return 0
+        }
 
 
         console.log("Hasło z bazy: " + result.dataValues.password)
