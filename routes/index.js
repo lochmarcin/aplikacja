@@ -13,6 +13,7 @@ router.use('/company', company)
 router.use('/auth', login)
 router.use('/users', uzytkownik)
 
+
 router.use('/', (req, res)=> res.send("jesteś w indexsach"))
 
 module.exports = router
