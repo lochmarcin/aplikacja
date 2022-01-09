@@ -1,17 +1,13 @@
 const express = require('express')
-const { route } = require('..')
+// const { router } = require('..')
 const router = express.Router()
 // const db = require("../../postgres")
 const db = require('../../config/database')
 
 const Todo = require('../../models/todo')
-let User = require('../../models/users')
+const User = require('../../models/users')
 
 const authenticate = require('./../../services/authenticate')
-
-
-const cookieParser = require('cookie-parser');
-router.use(cookieParser());
 
 
 // GET ALL TODOS WITCH DONE IS FALSE ---------- GET ALL TODOS ---------- GET ALL TODOS 
@@ -217,58 +213,29 @@ router.post("/addReg", (req, res) => {
         })
 })
 
-// Pobieranie jednego TODO po id
 router.get('/getOne/:id', (req, res) => {
     console.log("get one todos")
     console.log("--------------------------------------------------------------------------")
     console.log(req.params.id)
 
-    Todo.findAll({
+    Todo.findOne({
         raw: true,
         where: {
             id: req.params.id
         }
     })
         .then(todo => {
-            let collect_date = `${todo[0].dataValues.collect_date}`
-            let dates = collect_date.split('-')
+            console.log(todo)
+            
+            let dates = `${todo.collect_date}`
+            dates = dates.split('-')
             console.log(dates)
-            todo[0].dataValues.day = dates[2]
-            todo[0].dataValues.month = dates[1]
-            todo[0].dataValues.year = dates[0]
+            todo.day = dates[2]
+            todo.month = dates[1]
+            todo.year = dates[0]
 
-            console.log(todo[0].dataValues)
-            res.status(200).json(todo[0].dataValues)
-        })
-        .catch(err => {
-            console.log('Error: ' + err)
-            res.sendStatus(400)
-        })
-})
-
-
-router.get('/getOne/:id', (req, res) => {
-    console.log("get one todos")
-    console.log("--------------------------------------------------------------------------")
-    console.log(req.params.id)
-
-    Todo.findAll({
-        raw: true,
-        where: {
-            id: req.params.id
-        }
-    })
-        .then(todo => {
-            console.log(todo[0])
-            let collect_date = `${todo[0].dataValues.collect_date}`
-            let dates = collect_date.split('-')
-            console.log(dates)
-            todo[0].dataValues.day = dates[2]
-            todo[0].dataValues.month = dates[1]
-            todo[0].dataValues.year = dates[0]
-
-            console.log(todo[0].dataValues)
-            res.status(200).json(todo[0].dataValues)
+            // console.log(todo[0].dataValues)
+            res.status(200).json(todo)
         })
         .catch(err => {
             console.log('Error: ' + err)

@@ -23,11 +23,11 @@ const Todo = db.define('todo', {
     note: {
         type: Sequelize.STRING
     },
-    collect_date: {
-        type: Sequelize.DATE
-    },
     condition: {
         type: Sequelize.STRING
+    },
+    collect_date: {
+        type: Sequelize.DATE
     },
     createdAt: {
         type: Sequelize.DATE
