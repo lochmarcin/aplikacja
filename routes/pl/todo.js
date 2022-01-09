@@ -151,6 +151,15 @@ router.post("/addNew", (req, res) => {
     let { users, company, part, indexx, quantity, price, band_number, note, day, month, year } = req.body
     let done = false
     let condition = "nowa/używana"
+    
+    //otrzymywane dane jako liczby
+    month = month + ""
+    day = day + "" 
+    if (month.length == 1)
+        month = `0${month}`
+
+    if (day.length == 1)
+        day = `0${day}`
 
     let collect_date = `${year}-${month}-${day}`
     console.log("Collect_date: " + collect_date)
@@ -198,8 +207,12 @@ router.post("/addReg", (req, res) => {
     let done = false
     let condition = "regenerowana"
 
+    //otrzymywane dane jako liczby
+    month = month + ""
+    day = day + "" 
     if (month.length == 1)
         month = `0${month}`
+
     if (day.length == 1)
         day = `0${day}`
 
