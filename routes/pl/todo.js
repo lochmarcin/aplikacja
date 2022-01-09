@@ -57,7 +57,7 @@ router.get('/getDone', (req, res) => {
         .then(todo => {
             //todo = JSON.stringify(todo)
             // console.log(todo[0].dataValues.price)
-            console.log(todo)
+            // console.log(todo)
             res.status(200).json(todo)
         })
         .catch(err => {
