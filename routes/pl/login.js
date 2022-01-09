@@ -22,12 +22,14 @@ router.use(express.urlencoded({ extended: true }))
 
 router.get("/me", async (req, res) => {
     authenticate(req, res)
-    if (req.user.username == null) {
+    if (req.user == null) {
         console.log("Brak zalogowanego uzytkownika")
-        res.send(500).send("Brak zalogowanego uzytkownika")
+        res.status(500).send("Brak zalogowanego uzytkownika")
     }
     else {
         console.log("req.user: " + req.user.username)
+        res.status(200).send("Zalogowany: " + req.user.username)
+
     }
 
 })
@@ -82,7 +84,7 @@ router.post("/register", async (req, res) => {
 //     }
 // })
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
     const username = req.body.username
     const password = req.body.password
 
@@ -97,7 +99,7 @@ router.post('/login', async (req, res) => {
                 username: username
             }
         })
-        console.log("Znaleziono: " + result)
+        console.log("Znaleziono: " + result.dataValues.username)
         if (result == null){
             res.send("Błędne dane logowania!")
             return 0
@@ -146,16 +148,17 @@ router.post('/login', async (req, res) => {
 
         res.cookie('JWT', accessToken, {
             maxAge: 86400000,
-            httpOnly: true,
+            httpOnly: true
         })
-        console.log("Wysłałem tokena: " + accessToken)
-        res.status(200).json({
-            isEditor: result.dataValues.isEditor,
-            token: accessToken
-        })
+
+        // console.log("Wysłałem tokena: " + accessToken)
+        // res.json({
+        //     isEditor: result.dataValues.isEditor,
+        //     token: accessToken
+        // })
 
         console.log("Zalogowano!")
-
+        next()
     }
     else {
         res.send("Błędne dane logowania!")

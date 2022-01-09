@@ -15,6 +15,7 @@ const authenticate = require('./../../services/authenticate')
 router.get('/get', (req, res) => {
     console.log("get all todos")
     Todo.findAll({
+        raw: true,
         where: {
             done: false
         },
@@ -38,6 +39,7 @@ router.get('/get', (req, res) => {
 router.get('/getDone', (req, res) => {
     console.log("get all todos")
     Todo.findAll({
+        raw: true,
         where: {
             done: true
         },
@@ -93,7 +95,7 @@ router.put("/updateDone/:id", async (req, res) => {
 
     await Todo.update(
         {
-            whoDone : fullname,
+            whoDone: fullname,
             done: "true"
         },
         {
@@ -117,9 +119,9 @@ router.put("/updateNotDone/:id", async (req, res) => {
 
 
     await Todo.update(
-        { 
-            whoDone : null,
-            done: "false" 
+        {
+            whoDone: null,
+            done: "false"
         },
         {
             where: {
@@ -143,13 +145,13 @@ router.post("/addNew", (req, res) => {
     console.log("----------------------------")
     console.log(req.body)
 
-    let { users, company, part, indexx, quantity, price, band_number, note , day, month, year } = req.body
+    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year } = req.body
     let done = false
     let condition = "nowa/używana"
 
     let collect_date = `${year}-${month}-${day}`
     console.log("Collect_date: " + collect_date)
- 
+
     Todo.create({
         users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, done
     })
@@ -162,6 +164,26 @@ router.post("/addNew", (req, res) => {
             res.sendStatus(400)
         })
 })
+router.post("/add",async (req, res) => {
+    console.log("add todo:")
+    console.log("----------------------------")
+    // console.log(req.body)
+
+    let { users, company, part, indexx, quantity, price, band_number, note, collect_date, condition } = req.body
+    let done = false
+
+    try {
+        const result = await Todo.create({
+            users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, done
+        })
+        console.log(result.dataValues)
+        res.status(200).json(result.dataValues)
+    } catch (err) {
+        console.log("Error: " + err)
+    }
+        
+})
+
 
 // Dodanie jednego TODO Regenerowana 
 router.post("/addReg", (req, res) => {
@@ -195,17 +217,47 @@ router.get('/getOne/:id', (req, res) => {
     console.log(req.params.id)
 
     Todo.findAll({
+        raw: true,
         where: {
             id: req.params.id
         }
     })
         .then(todo => {
             let collect_date = `${todo[0].dataValues.collect_date}`
-            let dates=collect_date.split('-') 
+            let dates = collect_date.split('-')
             console.log(dates)
-            todo[0].dataValues.day=dates[2]
-            todo[0].dataValues.month=dates[1]
-            todo[0].dataValues.year=dates[0]
+            todo[0].dataValues.day = dates[2]
+            todo[0].dataValues.month = dates[1]
+            todo[0].dataValues.year = dates[0]
+
+            console.log(todo[0].dataValues)
+            res.status(200).json(todo[0].dataValues)
+        })
+        .catch(err => {
+            console.log('Error: ' + err)
+            res.sendStatus(400)
+        })
+})
+
+
+router.get('/getOne/:id', (req, res) => {
+    console.log("get one todos")
+    console.log("--------------------------------------------------------------------------")
+    console.log(req.params.id)
+
+    Todo.findAll({
+        raw: true,
+        where: {
+            id: req.params.id
+        }
+    })
+        .then(todo => {
+            let collect_date = `${todo[0].dataValues.collect_date}`
+            let dates = collect_date.split('-')
+            console.log(dates)
+            todo[0].dataValues.day = dates[2]
+            todo[0].dataValues.month = dates[1]
+            todo[0].dataValues.year = dates[0]
 
             console.log(todo[0].dataValues)
             res.status(200).json(todo[0].dataValues)
@@ -229,10 +281,10 @@ router.put("/update/:id", async (req, res) => {
     let check_day_length = day.toString().length
     let check_month_length = month.toString().length
 
-    if(check_day_length == 1 ){
+    if (check_day_length == 1) {
         day = '0' + day
     }
-    if(check_month_length == 1 ){
+    if (check_month_length == 1) {
         month = '0' + month
     }
 

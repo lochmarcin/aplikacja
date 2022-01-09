@@ -7,6 +7,8 @@ router.get('/get', (req,res)=>{
     console.log('pobieranie użytkowników')
 
     Users.findAll({
+        raw: true,
+        attributes: ['id','firstname', 'lastname', 'username', 'isViewer', 'isEditor', 'createdAt']
     })
         .then(user => {
             console.log(user)
