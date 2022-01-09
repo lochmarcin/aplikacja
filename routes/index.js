@@ -1,10 +1,12 @@
 const express = require('express')
 const router = express.Router()
+const cors = require('cors')
 
 const todo = require('./pl/todo')
 const company = require('./pl/company')
 const login = require('./pl/login')
 const uzytkownik = require('./pl/users')
+
 
 
 

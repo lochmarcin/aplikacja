@@ -10,9 +10,14 @@ let User = require('../../models/users')
 const authenticate = require('./../../services/authenticate')
 
 
+const cookieParser = require('cookie-parser');
+router.use(cookieParser());
+
 
 // GET ALL TODOS WITCH DONE IS FALSE ---------- GET ALL TODOS ---------- GET ALL TODOS 
 router.get('/get', (req, res) => {
+    authenticate(req, res)
+
     console.log("get all todos")
     Todo.findAll({
         raw: true,
@@ -26,8 +31,10 @@ router.get('/get', (req, res) => {
         .then(todo => {
             //todo = JSON.stringify(todo)
             // console.log(todo[0].dataValues.price)
-            console.log(todo)
-            res.status(200).json(todo)
+            console.log('cookie created successfully');
+
+            // console.log(todo)
+            res.send(todo)
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -164,7 +171,7 @@ router.post("/addNew", (req, res) => {
             res.sendStatus(400)
         })
 })
-router.post("/add",async (req, res) => {
+router.post("/add", async (req, res) => {
     console.log("add todo:")
     console.log("----------------------------")
     // console.log(req.body)
@@ -181,7 +188,7 @@ router.post("/add",async (req, res) => {
     } catch (err) {
         console.log("Error: " + err)
     }
-        
+
 })
 
 

@@ -101,7 +101,7 @@ router.post('/login', async (req, res, next) => {
         })
         console.log("Znaleziono: " + result.dataValues.username)
         if (result == null){
-            res.send("Błędne dane logowania!")
+            res.status(200).send("Błędne dane logowania!")
             return 0
         }
 
@@ -151,11 +151,12 @@ router.post('/login', async (req, res, next) => {
             httpOnly: true
         })
 
-        // console.log("Wysłałem tokena: " + accessToken)
-        // res.json({
-        //     isEditor: result.dataValues.isEditor,
-        //     token: accessToken
-        // })
+        console.log("Wysłałem tokena: " + accessToken)
+        // res.setHeader('Acces-Control-Allow-Origin','*')
+        res.status(200).json({
+            isEditor: result.dataValues.isEditor,
+            token: accessToken
+        })
 
         console.log("Zalogowano!")
         next()
