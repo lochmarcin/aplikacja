@@ -16,7 +16,7 @@ router.use(cookieParser());
 
 // GET ALL TODOS WITCH DONE IS FALSE ---------- GET ALL TODOS ---------- GET ALL TODOS 
 router.get('/get', (req, res) => {
-    authenticate(req, res)
+    // authenticate(req, res)
 
     console.log("get all todos")
     Todo.findAll({
@@ -31,7 +31,7 @@ router.get('/get', (req, res) => {
         .then(todo => {
             //todo = JSON.stringify(todo)
             // console.log(todo[0].dataValues.price)
-            console.log('cookie created successfully');
+            // console.log('cookie created successfully');
 
             // console.log(todo)
             res.send(todo)
