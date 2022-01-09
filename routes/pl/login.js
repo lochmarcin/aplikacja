@@ -101,6 +101,7 @@ router.post('/login', async (req, res, next) => {
         })
         if (result == null){
             res.status(200).json({
+                isEditor: null,
                 token: null
             })
             return 0
@@ -165,6 +166,7 @@ router.post('/login', async (req, res, next) => {
     }
     else {
         res.status(200).json({
+            isEditor: null,
             token: null
         })
     }
