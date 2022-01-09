@@ -16,7 +16,7 @@ router.use(cookieParser());
 
 // GET ALL TODOS WITCH DONE IS FALSE ---------- GET ALL TODOS ---------- GET ALL TODOS 
 router.get('/get', (req, res) => {
-    // authenticate(req, res)
+    authenticate(req, res)
 
     console.log("get all todos")
     Todo.findAll({
