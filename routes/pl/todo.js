@@ -33,7 +33,7 @@ router.get('/get', (req, res) => {
             // console.log(todo[0].dataValues.price)
             // console.log('cookie created successfully');
 
-            // console.log(todo)
+            console.log(todo)
             res.send(todo)
         })
         .catch(err => {
@@ -136,7 +136,7 @@ router.put("/updateNotDone/:id", async (req, res) => {
             }
         })
         .then(todos => {
-            console.log(todos[0])
+            // console.log(todos[0])
             res.status(200).send((todos[0] = 1) ? "looks good" : "sometching is wrong")
         })
         .catch(err => {
