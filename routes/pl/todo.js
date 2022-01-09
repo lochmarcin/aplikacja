@@ -197,7 +197,12 @@ router.post("/addReg", (req, res) => {
     let { users, company, part, indexx, quantity, price, band_number, note, day, month, year } = req.body
     let done = false
     let condition = "regenerowana"
-    
+
+    if (month.length == 1)
+        month = `0${month}`
+    if (day.length == 1)
+        day = `0${day}`
+
     let collect_date = `${year}-${month}-${day}`
     console.log("Collect_date: " + collect_date)
     Todo.create({
@@ -226,7 +231,7 @@ router.get('/getOne/:id', (req, res) => {
     })
         .then(todo => {
             console.log(todo)
-            
+
             let dates = `${todo.collect_date}`
             dates = dates.split('-')
             console.log(dates)
