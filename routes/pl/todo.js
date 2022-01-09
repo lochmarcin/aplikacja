@@ -29,7 +29,7 @@ router.get('/get', (req, res) => {
             // console.log(todo[0].dataValues.price)
             // console.log('cookie created successfully');
 
-            console.log(todo)
+            // console.log(todo)
             res.send(todo)
         })
         .catch(err => {
@@ -151,7 +151,7 @@ router.post("/addNew", (req, res) => {
     let { users, company, part, indexx, quantity, price, band_number, note, day, month, year } = req.body
     let done = false
     let condition = "nowa/używana"
-    
+
     //otrzymywane dane jako liczby
     month = month + ""
     day = day + "" 
