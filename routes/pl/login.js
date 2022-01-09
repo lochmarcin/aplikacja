@@ -99,16 +99,18 @@ router.post('/login', async (req, res, next) => {
                 username: username
             }
         })
-        console.log("Znaleziono: " + result.dataValues.username)
         if (result == null){
-            res.status(200).send("Błędne dane logowania!")
+            res.status(200).json({
+                token: null
+            })
             return 0
         }
-
-
-        console.log("Hasło z bazy: " + result.dataValues.password)
-        dbPassword = result.dataValues.password
-        console.log(dbPassword)
+        else{
+            console.log("Znaleziono: " + result.username)
+            console.log("Hasło z bazy: " + result.password)
+            dbPassword = result.password
+            console.log(dbPassword)
+        }
     } catch (e) {
         res.sendStatus(400)
         console.log(e)
@@ -162,7 +164,9 @@ router.post('/login', async (req, res, next) => {
         next()
     }
     else {
-        res.send("Błędne dane logowania!")
+        res.status(200).json({
+            token: null
+        })
     }
 
 
