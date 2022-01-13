@@ -24,12 +24,9 @@ const notification = async (notifi) => {
             }
           }
     }).then((msg) => {
-        res.sendStatus(200)
-
         console.log(msg)
     }).catch(err => {
         console.log('Error: ' + err)
-        res.sendStatus(400)
     })
 }
 
