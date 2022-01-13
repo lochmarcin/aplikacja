@@ -1,13 +1,29 @@
 const express = require('express')
 // const { router } = require('..')
 const router = express.Router()
+// const fetch = require('node-fetch')
+const axios = require('axios')
 // const db = require("../../postgres")
 const db = require('../../config/database')
+const notification = require('./notification')
+
+// import fetch from "node-fetch";
 
 const Todo = require('../../models/todo')
 const User = require('../../models/users')
 
 const authenticate = require('./../../services/authenticate')
+
+
+
+var admin = require("firebase-admin");
+
+var serviceAccount = require("../../motopres-56f80-firebase-adminsdk-rjc35-1ea0d56603.json");
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
+
 
 
 // GET ALL TODOS WITCH DONE IS FALSE ---------- GET ALL TODOS ---------- GET ALL TODOS 
@@ -60,6 +76,42 @@ router.get('/getDone', (req, res) => {
             console.log('Error: ' + err)
             res.sendStatus(400)
         })
+})
+
+router.post('/notification', (req, res) => {
+    console.log("Powiadomienia ")
+
+    let notification = {
+        'title': "Dodano nowe zadane",
+        'body': 'Przywieź turbo kurwaaa !'
+        // 'imageUrl': 'https://firebasestorage.googleapis.com/v0/b/motopres-9e852.appspot.com/o/ikona.png?alt=media&token=e1466eb4-17d3-4c85-a497-5b8a2377c291',
+        // 'color': '#7e55c3'
+    }
+
+    let tokens = ['dwHtFwplQN608ACf39LwzF:APA91bG5uvyeGtCYtwGg-32Su4JboJAiY1yomhKfBfP27lKVUwDSxrfHkJuM5hCSTJ4slebB7Cnrp5Ns-VSNU46ZvOsY-w2b3rsZKswO61E9fVMk2BSOT1R-O6O4jzt4l14R9UpeeS1M',
+        'cr9GiYcHTPudw9qo0NGEyZ:APA91bEAZzBMrNBVhYselld9MDZHN6Y_EKYqioMRQmKJ94ZfE8VXgazMyv9MeWAiG6m58INsLdth-tYK5XfTm0ipHmwIQpwO7vn5LHMnf0oB0mm9oOfVFpU4wPrWk1lb3UPbUH_mUKxy']
+
+    // let notification_body =  {
+    //     "notification" : notification,
+    //     'to' : fcm_tokens
+    // }
+    admin.messaging().sendMulticast({
+        tokens: tokens,
+        notification: notification,
+        android: {
+            notification: {
+              icon: 'https://firebasestorage.googleapis.com/v0/b/motopres-9e852.appspot.com/o/ikona.png?alt=media&token=e1466eb4-17d3-4c85-a497-5b8a2377c291',
+              color: '#7e55c3'
+            }
+          }
+    }).then((msg) => {
+        res.sendStatus(200)
+
+        console.log(msg)
+    }).catch(err => {
+        console.log('Error: ' + err)
+        res.sendStatus(400)
+    })
 })
 
 
@@ -154,7 +206,7 @@ router.post("/addNew", (req, res) => {
 
     //otrzymywane dane jako liczby
     month = month + ""
-    day = day + "" 
+    day = day + ""
     if (month.length == 1)
         month = `0${month}`
 
@@ -176,20 +228,41 @@ router.post("/addNew", (req, res) => {
             res.sendStatus(400)
         })
 })
+
+
+// Dodawanie przez przeglądarkę ------------------------------------------------
 router.post("/add", async (req, res) => {
     console.log("add todo:")
     console.log("----------------------------")
+    authenticate(req, res)
+    console.log("req.user: " + req.user.username)
     // console.log(req.body)
 
-    let { users, company, part, indexx, quantity, price, band_number, note, collect_date, condition } = req.body
+    
+
+    let { company, part, indexx, quantity, price, band_number, note, collect_date, condition } = req.body
     let done = false
 
     try {
+        const who = await User.findOne({
+            where: {
+                username: req.user.username
+            }
+        })
+
+        const whoAdd = `${who.dataValues.firstname} ${who.dataValues.lastname}`
+        console.log("Kto dodał: " + whoAdd)
+
         const result = await Todo.create({
-            users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, done
+            company, collect_date, part, indexx, quantity, price, band_number, note, condition, done, whoAdd
         })
         console.log(result.dataValues)
         res.status(200).json(result.dataValues)
+        let notifi = {
+            'title': "Dodano nowe zadane",
+            'body': `${part} - Data: ${collect_date}`
+        }
+        notification(notifi)
     } catch (err) {
         console.log("Error: " + err)
     }
@@ -209,7 +282,7 @@ router.post("/addReg", (req, res) => {
 
     //otrzymywane dane jako liczby
     month = month + ""
-    day = day + "" 
+    day = day + ""
     if (month.length == 1)
         month = `0${month}`
 

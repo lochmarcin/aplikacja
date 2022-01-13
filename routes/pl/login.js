@@ -27,9 +27,9 @@ router.get("/me", async (req, res) => {
         res.status(500).send("Brak zalogowanego uzytkownika")
     }
     else {
-        console.log("req.user: " + req.user.username)
-        res.status(200).send("Zalogowany: " + req.user.username)
-
+        console.log("req.user.username: " + req.user.username)
+       
+        res.status(200).send(req.user)
     }
 
 })
@@ -37,7 +37,7 @@ router.get("/me", async (req, res) => {
 
 
 router.post("/register", async (req, res) => {
-    const { firstname, lastname, username, password, isEditor } = req.body
+    const { firstname, lastname, username, password, isEditor, isAdmin } = req.body
     console.log(req.body)
 
     const hash = await bcrypt.hash(password, 10)
@@ -47,7 +47,8 @@ router.post("/register", async (req, res) => {
             lastname: lastname,
             username: username,
             password: hash,
-            isEditor: isEditor
+            isEditor: isEditor,
+            isAdmin: isAdmin
         })
   
         res.status(200).send("Użytkownik dodany!")
@@ -56,33 +57,6 @@ router.post("/register", async (req, res) => {
         res.sendStatus(500)
     }
 })
-
-
-// router.post('/loginn', async (req, res) => {
-//     const username = req.body.username
-//     const password = req.body.password
-//     console.log("username: " + username)
-//     console.log("password: " + password)
-
-
-
-//     try {
-//         const result = await User.findOne({
-//             where: {
-//                 username: username
-//             }
-//         })
-
-//         const dbPassword = result.dataValues.password
-
-//         const validPassword = await bcrypt.compare(password, result.dataValues.password)
-
-//         console.log(validPassword)
-//     } catch (e) {
-//         res.sendStatus(400)
-//         console.log(e)
-//     }
-// })
 
 router.post('/login', async (req, res, next) => {
     const username = req.body.username
@@ -165,6 +139,7 @@ router.post('/login', async (req, res, next) => {
         next()
     }
     else {
+        
         res.status(200).json({
             isEditor: null,
             token: null
@@ -201,43 +176,6 @@ router.post('/refresh', (req, res) => {
 
     res.send({ accessToken })
 })
-
-// function generateAccessToken(payload) {
-//     return jwt.sign(user_id: result.dataValues.id, username: result.dataValues.username, process.env.TOKEN_SECRET, { expiresIn: 86400 }) // 86400
-// }
-
-// function authenticate(req, res, next) {
-//     // const authHeader = req.headers['authorization']
-//     // const token = authHeader && authHeader.split(' ')[1]
-//     const token = req.cookies.JWT
-
-//     if (token === null) return res.sendStatus(401)
-
-//     jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-//         if (err) return res.sendStatus(403)
-
-//         req.user = user
-//         next()
-//     })
-// }
-
-// function authenticate(req, res, next) {
-
-//     const token = req.cookies.JWT
-
-//     if (token === null)
-//         return res.sendStatus(401)
-
-//     jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-//         if (err)
-//             return res.sendStatus(403)
-
-//         req.user = user
-//         console.log("autchenticate: " + user.username)
-//         return (req.user)
-
-//     })
-// }
 
 router.delete("/logout", async (req, res) => {
     res.cookie('JWT', null);

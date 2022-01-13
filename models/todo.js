@@ -40,6 +40,9 @@ const Todo = db.define('todo', {
     },
     whoDone: {
         type: Sequelize.STRING
+    },
+    whoAdd: {
+        type: Sequelize.STRING
     }
 })
 
