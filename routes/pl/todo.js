@@ -220,6 +220,11 @@ router.post("/addNew", (req, res) => {
         users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, done
     })
         .then(todo => {
+            let notifi = {
+                'title': "Dodano nowe zadanie",
+                'body': `${part} - Data odbioru: ${collect_date}`
+            }
+            notification(notifi)
             console.log("Powinoo wysłać")
             res.sendStatus(200)
         })
@@ -258,9 +263,10 @@ router.post("/add", async (req, res) => {
         })
         console.log(result.dataValues)
         res.status(200).json(result.dataValues)
+
         let notifi = {
-            'title': "Dodano nowe zadane",
-            'body': `${part} - Data: ${collect_date}`
+            'title': "Dodano nowe zadanie",
+            'body': `${part} - Data odbioru: ${collect_date}`
         }
         notification(notifi)
     } catch (err) {
@@ -295,6 +301,11 @@ router.post("/addReg", (req, res) => {
         users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, done
     })
         .then(todo => {
+            let notifi = {
+                'title': "Dodano nowe zadanie",
+                'body': `${part} - Data odbioru: ${collect_date}`
+            }
+            notification(notifi)
             console.log("Powinoo wysłać")
             res.sendStatus(200)
         })

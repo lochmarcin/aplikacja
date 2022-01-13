@@ -1,6 +1,7 @@
 const Fcm = require('../../models/fcm')
+var admin = require("firebase-admin");
 
-
+let tokens =[]
 const notification = async (notifi) => {
     console.log(notifi)
 
@@ -8,9 +9,10 @@ const notification = async (notifi) => {
         raw: true,
         attributes: ['token']
     })
-    console.log(token[0].token)
+    // console.log(token[0].token)
 
-    const tokens = token[0].token
+    tokens.push(token[0].token) 
+    console.log(tokens)
 
     admin.messaging().sendMulticast({
         tokens: tokens,

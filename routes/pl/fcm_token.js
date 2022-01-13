@@ -4,7 +4,7 @@ const Fcm = require('../../models/fcm')
 
 router.post("/", async (req, res) => {
     console.log('Rejestrowanie nowego tokena FCM')
-
+    
     await Fcm.findOrCreate({ 
         where: { 
             token: req.body.token
