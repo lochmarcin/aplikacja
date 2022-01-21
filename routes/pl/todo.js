@@ -63,7 +63,7 @@ router.get('/getDone', (req, res) => {
             done: true
         },
         order: [
-            ['collect_date', 'ASC']
+            ['collect_date', 'DESC']
         ]
     })
         .then(todo => {
@@ -345,6 +345,34 @@ router.get('/getOne/:id', (req, res) => {
         })
 })
 
+
+// Aktualizacja jednego todo po id WEB
+router.put("/updateWeb/:id", async (req, res) => {
+    console.log(req.body)
+    const param = req.params.id
+    console.log('Param: ' + param)
+
+
+    let { users, company, part, indexx, quantity, price, band_number, note, collect_date, condition } = req.body
+
+    console.log("Collect_date: " + collect_date)
+
+    await Todo.update({ users, company, collect_date, part, indexx, quantity, price, band_number, note, condition },
+        {
+            where: {
+                id: param
+            }
+        })
+        .then(todos => {
+            console.log((todos[0] = 1) ? true : false)
+            res.status(200).send((todos[0] = 1) ? true : false)
+        })
+        .catch(err => {
+            console.log('Error: ' + err)
+            res.status(400).send(false)
+        })
+
+})
 
 // Aktualizacja jednego todo po id
 router.put("/update/:id", async (req, res) => {

@@ -15,7 +15,7 @@ const notification = async (notifi) => {
     console.log(tokens)
 
     admin.messaging().sendMulticast({
-        tokens: tokens,
+        tokens: ['dwHtFwplQN608ACf39LwzF:APA91bG5uvyeGtCYtwGg-32Su4JboJAiY1yomhKfBfP27lKVUwDSxrfHkJuM5hCSTJ4slebB7Cnrp5Ns-VSNU46ZvOsY-w2b3rsZKswO61E9fVMk2BSOT1R-O6O4jzt4l14R9UpeeS1M'],
         notification: notifi,
         android: {
             notification: {

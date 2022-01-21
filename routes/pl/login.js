@@ -28,7 +28,7 @@ router.get("/me", async (req, res) => {
     }
     else {
         console.log("req.user.username: " + req.user.username)
-       
+
         res.status(200).send(req.user)
     }
 
@@ -42,19 +42,36 @@ router.post("/register", async (req, res) => {
 
     const hash = await bcrypt.hash(password, 10)
     try {
-        const result = await User.create({
-            firstname: firstname,
-            lastname: lastname,
-            username: username,
-            password: hash,
-            isEditor: isEditor,
-            isAdmin: isAdmin
+        const [user, created] = await User.findOrCreate({
+            raw: true,
+            where: {
+                username: username
+            },
+            defaults: {
+                firstname: firstname,
+                lastname: lastname,
+                username: username,
+                password: hash,
+                isEditor: isEditor,
+                isAdmin: isAdmin
+            }
         })
-  
-        res.status(200).send("Użytkownik dodany!")
-    } catch (e) {
-        console.log(e)
-        res.sendStatus(500)
+
+        if (created == true) {
+            console.log("Dodano użytkonik")
+            console.log(user.dataValues)
+            res.status(200).send(user.dataValues)
+
+        }
+        else {
+            res.status(200).json({
+                "exists": true
+            })
+            console.log("Istnieje już taki")
+        }
+    } catch (err) {
+        console.log(err)
+        res.sendStatus(400)
     }
 })
 
@@ -73,14 +90,14 @@ router.post('/login', async (req, res, next) => {
                 username: username
             }
         })
-        if (result == null){
+        if (result == null) {
             res.status(200).json({
                 isEditor: null,
                 token: null
             })
             return 0
         }
-        else{
+        else {
             console.log("Znaleziono: " + result.username)
             console.log("Hasło z bazy: " + result.password)
             dbPassword = result.password
@@ -131,6 +148,8 @@ router.post('/login', async (req, res, next) => {
         console.log("Wysłałem tokena: " + accessToken)
         // res.setHeader('Acces-Control-Allow-Origin','*')
         res.status(200).json({
+            firstname: result.dataValues.firstname,
+            isAdmin: result.dataValues.isAdmin,
             isEditor: result.dataValues.isEditor,
             token: accessToken
         })
@@ -139,7 +158,7 @@ router.post('/login', async (req, res, next) => {
         next()
     }
     else {
-        
+
         res.status(200).json({
             isEditor: null,
             token: null

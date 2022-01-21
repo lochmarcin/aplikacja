@@ -20,6 +20,9 @@ const User = db.define('user', {
     isViewer: {
         type: Sequelize.BOOLEAN
     },
+    isAdmin: {
+        type: Sequelize.BOOLEAN
+    },
     accessToken: {
         type: Sequelize.STRING
     },
