@@ -364,7 +364,8 @@ router.put("/updateWeb/:id", async (req, res) => {
             }
         })
         .then(todos => {
-            console.log((todos[0] = 1) ? true : false)
+            console.log()
+            // console.log((todos[0] = 1) ? true : false)
             res.status(200).send((todos[0] = 1) ? true : false)
         })
         .catch(err => {
@@ -424,12 +425,15 @@ router.delete("/delete/:id", async (req, res) => {
         }
     })
         .then(todos => {
-            console.log((todos[0] = 1) ? "looks good" : "sometching is wrong")
-            res.status(200).send((todos[0] = 1) ? "looks good" : "sometching is wrong")
+            res.status(200).send({
+                deleted:true
+            })
         })
         .catch(err => {
             console.log('Error: ' + err)
-            res.sendStatus(400)
+            res.status(200).send({
+                deleted:false
+            })
         })
 })
 

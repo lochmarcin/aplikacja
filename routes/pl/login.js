@@ -24,12 +24,18 @@ router.get("/me", async (req, res) => {
     authenticate(req, res)
     if (req.user == null) {
         console.log("Brak zalogowanego uzytkownika")
-        res.status(500).send("Brak zalogowanego uzytkownika")
+        res.status(200).send({
+            logged:false
+        })
     }
     else {
         console.log("req.user.username: " + req.user.username)
+        let user = req.user
+        user.logged = true
+        res.status(200).send(user)
 
-        res.status(200).send(req.user)
+        // res.status(200).send(req.user)
+        
     }
 
 })
@@ -197,8 +203,10 @@ router.post('/refresh', (req, res) => {
 })
 
 router.delete("/logout", async (req, res) => {
-    res.cookie('JWT', null);
-
+    // res.cookie('JWT', "-");
+    res.clearCookie("JWT")
+    console.log("WYLOGOWANIE !!!")
+    console.log("logout: ",req.cookies)
     console.log(req.user)
     res.status(200).json({
         message: "Logged out successfully"

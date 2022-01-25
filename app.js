@@ -3,6 +3,7 @@ const routes = require('./routes/index')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
+const axios = require('axios')
 
 
 
@@ -18,12 +19,19 @@ app.use(cookieParser())
 
 app.use(
     cors({
-        origin: "*",
-        // Access-Control-Allow-Origin: *,
-        // origin: ["http://127.0.0.1:3000","http://192.168.1.143:8081"],
-        credentials: true
+        // origin: "*",
+        credentials: true,
+        'Access-Control-Allow-Origin': ["http://localhost:3000","http://127.0.0.1:3000","http://192.168.1.143:8081"],
+        origin: ["http://localhost:3000","http://127.0.0.1:3000","http://192.168.1.143:8081"],
     })
 )
+
+// app.use(
+//     axios.create({
+//         withCredentials: true
+//     })
+// )
+
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin","http://192.168.1.143:8081", "http://127.0.0.1:3000"); // update to match the domain you will make the request from
