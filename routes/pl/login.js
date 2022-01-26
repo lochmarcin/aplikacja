@@ -6,6 +6,8 @@ const cookieParser = require('cookie-parser')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const authenticate = require('./../../services/authenticate')
+const Fcm = require('../../models/fcm')
+
 
 
 
@@ -25,7 +27,7 @@ router.get("/me", async (req, res) => {
     if (req.user == null) {
         console.log("Brak zalogowanego uzytkownika")
         res.status(200).send({
-            logged:false
+            logged: false
         })
     }
     else {
@@ -35,7 +37,7 @@ router.get("/me", async (req, res) => {
         res.status(200).send(user)
 
         // res.status(200).send(req.user)
-        
+
     }
 
 })
@@ -84,6 +86,7 @@ router.post("/register", async (req, res) => {
 router.post('/login', async (req, res, next) => {
     const username = req.body.username
     const password = req.body.password
+    const fcm_token = req.body.token
 
     console.log("username podane: " + username)
 
@@ -130,7 +133,26 @@ router.post('/login', async (req, res, next) => {
 
         const refreshToken = jwt.sign({ user_id: result.dataValues.id, username: result.dataValues.username }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: 525600 })
 
-
+        // Save FCM token in DB
+        console.log("fcm_token: " + fcm_token)
+        if (fcm_token != undefined) {
+            try {
+                const [fcm, created] = await Fcm.findOrCreate({
+                    where: { token: fcm_token },
+                    defaults: {
+                        token: fcm_token
+                    }
+                });
+                if (created) {
+                    console.log("Dodano nowy token: " + fcm.token);
+                }
+            } catch (err) {
+                console.log("Save FCM token Error: " + err)
+            }
+        }
+        else {
+            console.log("Brak fcm tokena")
+        }
 
         // Save refresh Token in DB
         try {
@@ -206,7 +228,7 @@ router.delete("/logout", async (req, res) => {
     // res.cookie('JWT', "-");
     res.clearCookie("JWT")
     console.log("WYLOGOWANIE !!!")
-    console.log("logout: ",req.cookies)
+    console.log("logout: ", req.cookies)
     console.log(req.user)
     res.status(200).json({
         message: "Logged out successfully"

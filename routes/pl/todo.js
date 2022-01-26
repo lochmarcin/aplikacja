@@ -5,24 +5,21 @@ const router = express.Router()
 const axios = require('axios')
 // const db = require("../../postgres")
 const db = require('../../config/database')
-const notification = require('./notification')
+const firebaseNotifi = require('../../services/firebaseNotifi')
 
 // import fetch from "node-fetch";
 
 const Todo = require('../../models/todo')
 const User = require('../../models/users')
+const Fcm = require('../../models/fcm')
 
 const authenticate = require('./../../services/authenticate')
 
 
+// const fcms = require('../../services/arrayOfFcm')
+// var admin = require("firebase-admin");
+// var serviceAccount = require("../../motopres-56f80-firebase-adminsdk-rjc35-1ea0d56603.json");
 
-var admin = require("firebase-admin");
-
-var serviceAccount = require("../../motopres-56f80-firebase-adminsdk-rjc35-1ea0d56603.json");
-
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-});
 
 
 
@@ -41,11 +38,6 @@ router.get('/get', (req, res) => {
         ]
     })
         .then(todo => {
-            //todo = JSON.stringify(todo)
-            // console.log(todo[0].dataValues.price)
-            // console.log('cookie created successfully');
-
-            // console.log(todo)
             res.send(todo)
         })
         .catch(err => {
@@ -67,9 +59,6 @@ router.get('/getDone', (req, res) => {
         ]
     })
         .then(todo => {
-            //todo = JSON.stringify(todo)
-            // console.log(todo[0].dataValues.price)
-            // console.log(todo)
             res.status(200).json(todo)
         })
         .catch(err => {
@@ -78,59 +67,22 @@ router.get('/getDone', (req, res) => {
         })
 })
 
-router.post('/notification', (req, res) => {
+
+
+// Powiadomienia NOTIFICATION  ----- NOTIFICATION  ----- NOTIFICATION  ----- NOTIFICATION  
+router.post('/notification', async (req, res) => {
     console.log("Powiadomienia ")
 
     let notification = {
-        'title': "Dodano nowe zadane",
-        'body': 'Przywieź turbo kurwaaa !'
+        'title': "Tytul",
+        'body': 'Treść powiadomienia'
         // 'imageUrl': 'https://firebasestorage.googleapis.com/v0/b/motopres-9e852.appspot.com/o/ikona.png?alt=media&token=e1466eb4-17d3-4c85-a497-5b8a2377c291',
         // 'color': '#7e55c3'
     }
-
-    let tokens = ['dwHtFwplQN608ACf39LwzF:APA91bG5uvyeGtCYtwGg-32Su4JboJAiY1yomhKfBfP27lKVUwDSxrfHkJuM5hCSTJ4slebB7Cnrp5Ns-VSNU46ZvOsY-w2b3rsZKswO61E9fVMk2BSOT1R-O6O4jzt4l14R9UpeeS1M',
-        'cr9GiYcHTPudw9qo0NGEyZ:APA91bEAZzBMrNBVhYselld9MDZHN6Y_EKYqioMRQmKJ94ZfE8VXgazMyv9MeWAiG6m58INsLdth-tYK5XfTm0ipHmwIQpwO7vn5LHMnf0oB0mm9oOfVFpU4wPrWk1lb3UPbUH_mUKxy']
-
-    // let notification_body =  {
-    //     "notification" : notification,
-    //     'to' : fcm_tokens
-    // }
-    admin.messaging().sendMulticast({
-        tokens: tokens,
-        notification: notification,
-        android: {
-            notification: {
-              icon: 'https://firebasestorage.googleapis.com/v0/b/motopres-9e852.appspot.com/o/ikona.png?alt=media&token=e1466eb4-17d3-4c85-a497-5b8a2377c291',
-              color: '#7e55c3'
-            }
-          }
-    }).then((msg) => {
-        res.sendStatus(200)
-
-        console.log(msg)
-    }).catch(err => {
-        console.log('Error: ' + err)
-        res.sendStatus(400)
-    })
+    firebaseNotifi(notification)
+    res.sendStatus(200)
+   
 })
-
-
-
-// router.get("/dupa", async (req, res) => {
-//     authenticate(req, res)
-//     // console.log("req.user: " + req.user.id)
-
-//     const result = await User.findAll({
-//         where: {
-//             username: req.user.username
-//         }
-//     })
-//     let firstname = result[0].dataValues.firstname
-//     let lastname = result[0].dataValues.lastname
-//     let fullname = firstname.concat(" ", lastname)
-//     console.log(fullname)
-
-// })
 
 // Aktualizacja jednego todo po id NA DONE TRUE
 router.put("/updateDone/:id", async (req, res) => {
@@ -224,7 +176,8 @@ router.post("/addNew", (req, res) => {
                 'title': "Dodano nowe zadanie",
                 'body': `${part} - Data odbioru: ${collect_date}`
             }
-            notification(notifi)
+            firebaseNotifi(notifi)
+
             console.log("Powinoo wysłać")
             res.sendStatus(200)
         })
@@ -268,7 +221,7 @@ router.post("/add", async (req, res) => {
             'title': "Dodano nowe zadanie",
             'body': `${part} - Data odbioru: ${collect_date}`
         }
-        notification(notifi)
+        firebaseNotifi(notifi)
     } catch (err) {
         console.log("Error: " + err)
     }
@@ -305,7 +258,7 @@ router.post("/addReg", (req, res) => {
                 'title': "Dodano nowe zadanie",
                 'body': `${part} - Data odbioru: ${collect_date}`
             }
-            notification(notifi)
+            firebaseNotifi(notifi)
             console.log("Powinoo wysłać")
             res.sendStatus(200)
         })

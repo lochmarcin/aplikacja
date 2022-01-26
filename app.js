@@ -22,7 +22,8 @@ app.use(
         // origin: "*",
         credentials: true,
         'Access-Control-Allow-Origin': ["http://localhost:3000","http://127.0.0.1:3000","http://192.168.1.143:8081"],
-        origin: ["http://localhost:3000","http://127.0.0.1:3000","http://192.168.1.143:8081"],
+        // origin: ["http://localhost:3000","http://127.0.0.1:3000","http://192.168.1.143:8081"],
+        origin: true
     })
 )
 
