@@ -91,6 +91,8 @@ router.post('/login', async (req, res, next) => {
     console.log("username podane: " + username)
 
     console.log("Hasło podane: " + password)
+    console.log("FCM token : " + fcm_token)
+    console.log("------------------------------------------------------------")
     let dbPassword
     let result
     try {
