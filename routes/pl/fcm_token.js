@@ -17,16 +17,19 @@ router.post("/", async (req, res) => {
             if (created) {
                 console.log("Dodano nowy token: " + fcm.token);
                 res.sendStatus(200)
+                return
 
             }
         } catch (err) {
             console.log("Save FCM token Error: " + err)
             res.sendStatus(200)
+            return
         }
     }
     else {
         console.log("Brak fcm tokena")
         res.sendStatus(200)
+        return
     }
 
     // await Fcm.findOrCreate({

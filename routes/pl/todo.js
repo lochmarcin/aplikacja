@@ -217,6 +217,7 @@ router.post("/add", async (req, res) => {
         console.log(result.dataValues)
         res.status(200).json(result.dataValues)
 
+        console.log("Part: " + part +" Data odbioru: " + collect_date)
         let notifi = {
             'title': "Dodano nowe zadanie",
             'body': `${part} - Data odbioru: ${collect_date}`

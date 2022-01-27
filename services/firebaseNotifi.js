@@ -39,7 +39,6 @@ const firebaseNotifi = async (notification) => {
     
         }).catch(err => {
             console.log('Error: ' + err)
-            res.sendStatus(400)
         })
 
 
