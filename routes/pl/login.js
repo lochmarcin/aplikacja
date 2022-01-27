@@ -69,7 +69,7 @@ router.post("/register", async (req, res) => {
             console.log("Dodano użytkonik")
             console.log(user.dataValues)
             res.status(200).send(user.dataValues)
-
+            return
         }
         else {
             res.status(200).json({
@@ -78,8 +78,8 @@ router.post("/register", async (req, res) => {
             console.log("Istnieje już taki")
         }
     } catch (err) {
-        console.log(err)
-        res.sendStatus(400)
+        console.log("Rejestracja error" + err)
+        res.sendStatus(200)
     }
 })
 
@@ -113,8 +113,9 @@ router.post('/login', async (req, res, next) => {
             console.log(dbPassword)
         }
     } catch (e) {
-        res.sendStatus(400)
-        console.log(e)
+        console.log("Login Error" + e)
+        res.sendStatus(200)
+        return
     }
 
 
@@ -145,7 +146,9 @@ router.post('/login', async (req, res, next) => {
                     }
                 })
         } catch (e) {
-            res.sendStatus(400)
+            console.log("login Error: " + e)
+            res.sendStatus(200)
+            return
         }
 
         res.cookie('JWT', accessToken, {
@@ -161,16 +164,16 @@ router.post('/login', async (req, res, next) => {
             isEditor: result.dataValues.isEditor,
             token: accessToken
         })
-
         console.log("Zalogowano!")
         next()
+        return
     }
     else {
-
         res.status(200).json({
             isEditor: null,
             token: null
         })
+        return
     }
 
 
