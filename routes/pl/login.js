@@ -163,7 +163,7 @@ router.post('/login', async (req, res, next) => {
             token: accessToken
         })
         console.log("Zalogowano!")
-        next()
+        // next()
     }
     else {
         res.status(200).json({
