@@ -154,7 +154,7 @@ router.post("/addNew", (req, res) => {
 
     let { users, company, part, indexx, quantity, price, band_number, note, day, month, year } = req.body
     let done = false
-    let condition = "nowa/używana"
+    let condition = "Nowa / używane"
 
     //otrzymywane dane jako liczby
     month = month + ""
@@ -237,7 +237,7 @@ router.post("/addReg", (req, res) => {
 
     let { users, company, part, indexx, quantity, price, band_number, note, day, month, year } = req.body
     let done = false
-    let condition = "regenerowana"
+    let condition = "Regenerowane"
 
     //otrzymywane dane jako liczby
     month = month + ""

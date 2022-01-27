@@ -86,7 +86,7 @@ router.post("/register", async (req, res) => {
 router.post('/login', async (req, res, next) => {
     const username = req.body.username
     const password = req.body.password
-    const fcm_token = req.body.token
+    // const fcm_token = req.body.token
 
     console.log("username podane: " + username)
     console.log("Hasło podane: " + password)
