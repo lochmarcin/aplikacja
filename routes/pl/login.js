@@ -104,7 +104,6 @@ router.post('/login', async (req, res, next) => {
                 isEditor: null,
                 token: null
             })
-            return 0
         }
         else {
             console.log("Znaleziono: " + result.username)
@@ -115,7 +114,7 @@ router.post('/login', async (req, res, next) => {
     } catch (e) {
         console.log("Login Error" + e)
         res.sendStatus(200)
-        return
+        return 0
     }
 
 
@@ -148,7 +147,6 @@ router.post('/login', async (req, res, next) => {
         } catch (e) {
             console.log("login Error: " + e)
             res.sendStatus(200)
-            return
         }
 
         res.cookie('JWT', accessToken, {
@@ -166,14 +164,12 @@ router.post('/login', async (req, res, next) => {
         })
         console.log("Zalogowano!")
         next()
-        return
     }
     else {
         res.status(200).json({
             isEditor: null,
             token: null
         })
-        return
     }
 
 
