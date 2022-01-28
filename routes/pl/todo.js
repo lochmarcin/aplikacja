@@ -48,7 +48,7 @@ router.get('/get', (req, res) => {
 
 // GET ALL TODOS WITCH DONE IS FALSE ---------- GET ALL TODOS ---------- GET ALL TODOS 
 router.get('/getDone', (req, res) => {
-    console.log("get all todos")
+    console.log("get all DONE todos")
     Todo.findAll({
         raw: true,
         where: {
@@ -59,7 +59,7 @@ router.get('/getDone', (req, res) => {
         ]
     })
         .then(todo => {
-            res.status(200).json(todo)
+            res.status(200).send(todo)
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -74,8 +74,8 @@ router.post('/notification', async (req, res) => {
     console.log("Powiadomienia ")
 
     let notification = {
-        'title': "Tytul",
-        'body': 'Treść powiadomienia'
+        'title': "2",
+        'body': 'Treść powiadomienia 2'
         // 'imageUrl': 'https://firebasestorage.googleapis.com/v0/b/motopres-9e852.appspot.com/o/ikona.png?alt=media&token=e1466eb4-17d3-4c85-a497-5b8a2377c291',
         // 'color': '#7e55c3'
     }
