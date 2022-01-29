@@ -49,6 +49,8 @@ router.get('/get', (req, res) => {
 // GET ALL TODOS WITCH DONE IS FALSE ---------- GET ALL TODOS ---------- GET ALL TODOS 
 router.get('/getDone', (req, res) => {
     console.log("get all DONE todos")
+    // authenticate(req, res)
+
     Todo.findAll({
         raw: true,
         where: {
@@ -81,7 +83,7 @@ router.post('/notification', async (req, res) => {
     }
     firebaseNotifi(notification)
     res.sendStatus(200)
-   
+
 })
 
 // Aktualizacja jednego todo po id NA DONE TRUE
@@ -123,10 +125,34 @@ router.put("/updateDone/:id", async (req, res) => {
 // Aktualizacja jednego todo po id NA DONE FALSE
 router.put("/updateNotDone/:id", async (req, res) => {
     console.log("Param: " + req.params.id)
+    authenticate(req, res)
 
+    // console.log("User:")
+    // console.log(req.user.user_id)
+
+    // const resultWhoDone = await Todo.findOne({
+    //     where: {
+    //         id: req.params.id
+    //     }
+    // })
+    // let whoDone = resultWhoDone.dataValues.whoDone
+
+    const resultWhoLogin = await User.findOne({
+        where: {
+
+            id: req.user.user_id
+        }
+    })
+    let whologged = `${resultWhoLogin.dataValues.firstname} ${resultWhoLogin.dataValues.lastname}`
+
+    // console.log("kto dodał" + whoDone)
+    console.log("kto UPDATE: " + whologged)
+
+    // if (whoDone === whologged) {
 
     await Todo.update(
         {
+            whoRestored: whologged,
             whoDone: null,
             done: "false"
         },
@@ -143,6 +169,13 @@ router.put("/updateNotDone/:id", async (req, res) => {
             console.log('Error: ' + err)
             res.sendStatus(400)
         })
+    // }
+    // else{
+    //     console.log("Nichuja nie możesz")
+    //     res.status(200).send({
+    //         'permission':false
+    //     })
+    // }
 })
 
 
@@ -196,7 +229,7 @@ router.post("/add", async (req, res) => {
     console.log("req.user: " + req.user.username)
     // console.log(req.body)
 
-    
+
 
     let { company, part, indexx, quantity, price, band_number, note, collect_date, condition } = req.body
     let done = false
@@ -217,7 +250,7 @@ router.post("/add", async (req, res) => {
         console.log(result.dataValues)
         res.status(200).json(result.dataValues)
 
-        console.log("Part: " + part +" Data odbioru: " + collect_date)
+        console.log("Part: " + part + " Data odbioru: " + collect_date)
         let notifi = {
             'title': "Dodano nowe zadanie",
             'body': `${part} - Data odbioru: ${collect_date}`
@@ -380,13 +413,13 @@ router.delete("/delete/:id", async (req, res) => {
     })
         .then(todos => {
             res.status(200).send({
-                deleted:true
+                deleted: true
             })
         })
         .catch(err => {
             console.log('Error: ' + err)
             res.status(200).send({
-                deleted:false
+                deleted: false
             })
         })
 })

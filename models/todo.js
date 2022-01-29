@@ -43,6 +43,9 @@ const Todo = db.define('todo', {
     },
     whoAdd: {
         type: Sequelize.STRING
+    },
+    whoRestored: {
+        type: Sequelize.STRING
     }
 })
 
