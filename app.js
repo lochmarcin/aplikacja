@@ -21,11 +21,20 @@ app.use(
     cors({
         // origin: "*",
         credentials: true,
-        'Access-Control-Allow-Origin': ["http://localhost:3000","http://127.0.0.1:3000","http://192.168.1.143:8081"],
-        // origin: ["http://localhost:3000","http://127.0.0.1:3000","http://192.168.1.143:8081"],
+        'Access-Control-Allow-Origin': "*",
+
+        // 'Access-Control-Allow-Origin': ["http://tebuty.pl","http://motopres.tebuty.pl","http://localhost:3000","http://127.0.0.1:3000","http://192.168.1.143:8081"],
+        // origin: ["http://tebuty.pl","http://motopres.tebuty.pl","http://localhost:3000","http://127.0.0.1:3000","http://192.168.1.143:8081"],
         origin: true
     })
 )
+
+
+// app.use(function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+//   });
 
 // app.use(
 //     axios.create({
