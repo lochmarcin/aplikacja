@@ -69,8 +69,41 @@ router.post("/addApk", upload.single('apk'), async (req, res) => {
 
 
 // Mobile SEND FILE TO DOWNLOAD
+router.post("/check", async (req, res) => {
+    console.log("version: " + req.body.version)
+    try {
+
+        File.max('wersja')
+        .then(file => {
+            console.log(file)
+            req.body.version == file ? console.log(true) : console.log(false)
+
+            if(req.body.version == file){
+                res.status(200).json({
+                    update: false
+                })
+            }
+            else{
+                res.status(200).json({
+                    update: true
+                })
+            }
+        })
+        .catch(err => {
+            console.log('Error: ' + err)
+            res.sendStatus(200)
+        })
+
+        // const path = await dirname()
+        // const file = `${path}/uploads/app-release.apk`;
+        // res.download(file); // Set disposition and send it.
+    } catch (err) {
+        console.log("Send file ERROR: " + err)
+    }
+})
+// Mobile SEND FILE TO DOWNLOAD
 router.get("/download", async (req, res) => {
-    
+    console.log("version: " + req.body.version)
     try {
         const path = await dirname()
         const file = `${path}/uploads/app-release.apk`;
@@ -79,5 +112,6 @@ router.get("/download", async (req, res) => {
         console.log("Send file ERROR: " + err)
     }
 })
+
 
 module.exports = router

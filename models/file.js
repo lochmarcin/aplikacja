@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
 const db = require('../config/database')
 
-const File = db.define('file', {
+const File = db.define('update', {
     varsion: {
         type: Sequelize.REAL
     },
