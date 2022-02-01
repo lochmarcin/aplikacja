@@ -103,11 +103,11 @@ router.post("/check", async (req, res) => {
 })
 // Mobile SEND FILE TO DOWNLOAD
 router.get("/download", async (req, res) => {
-    console.log("version: " + req.body.version)
+    console.log("Download FILE ")
     try {
         const path = await dirname()
         const file = `${path}/uploads/app-release.apk`;
-        res.download(file); // Set disposition and send it.
+        res.status(200).download(file); // Set disposition and send it.
     } catch (err) {
         console.log("Send file ERROR: " + err)
     }
