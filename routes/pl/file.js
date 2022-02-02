@@ -4,6 +4,7 @@ const fs = require("fs")
 const File = require("../../models/file")
 const dirname = require("../../dirname")
 // const http = require("http");
+// const dasda = require("./../../uploads")
 
 const authenticate = require('./../../services/authenticate')
 
@@ -18,13 +19,13 @@ const storage = multer.diskStorage({
         cb(null, './uploads')
     },
     fileName: function (req, file, cb) {
-        const formatedName = req.file.originalname.split(' ').join('_')
+        const formatedName = file.originalname.split(' ').join('_')
         const fileName = new Date().toISOString().replace(/:/gi, '-') + '_' + formatedName
-        cb(null, file.fieldname + '-' + fileName + ".png")
+        cb(null, `${fileName}.apk`)
     }
 
 }
-)
+)   
 const upload = multer({
     storage,
     limits: { fileSize: maxSize }
@@ -59,7 +60,7 @@ router.post("/addApk", upload.single('apk'), async (req, res) => {
             return null
         }
 
-
+        console.log(req.file)
 
         // console.log("Filename: " + fileName)
 
@@ -107,8 +108,7 @@ router.get("/download", async (req, res) => {
     console.log("Download FILE ")
     try {
         const path = await dirname()
-        const file = `${path}/uploads/app-release.apk`;
-        res.status(200).download(file).redirect(301, "https://google.com")
+        const file = `${path}/uploads/app-release(1).apk`;
         // Set disposition and send it.
     } catch (err) {
         console.log("Send file ERROR: " + err)
