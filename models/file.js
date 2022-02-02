@@ -2,7 +2,7 @@ const Sequelize = require('sequelize')
 const db = require('../config/database')
 
 const File = db.define('update', {
-    varsion: {
+    wersja: {
         type: Sequelize.REAL
     },
     url: {
@@ -13,7 +13,11 @@ const File = db.define('update', {
     },
     updatedAt: {
         type: Sequelize.DATE
+    },
+    actual: {
+        type: Sequelize.BOOLEAN
     }
+
 })
 
 module.exports = File

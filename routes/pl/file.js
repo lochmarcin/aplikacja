@@ -3,6 +3,7 @@ const router = express.Router()
 const fs = require("fs")
 const File = require("../../models/file")
 const dirname = require("../../dirname")
+// const http = require("http");
 
 const authenticate = require('./../../services/authenticate')
 
@@ -74,25 +75,25 @@ router.post("/check", async (req, res) => {
     try {
 
         File.max('wersja')
-        .then(file => {
-            console.log(file)
-            req.body.version == file ? console.log(true) : console.log(false)
+            .then(file => {
+                console.log(file)
+                req.body.version == file ? console.log(true) : console.log(false)
 
-            if(req.body.version == file){
-                res.status(200).json({
-                    update: false
-                })
-            }
-            else{
-                res.status(200).json({
-                    update: true
-                })
-            }
-        })
-        .catch(err => {
-            console.log('Error: ' + err)
-            res.sendStatus(200)
-        })
+                if (req.body.version == file) {
+                    res.status(200).send({
+                        update: false
+                    })
+                }
+                else {
+                    res.status(200).send({
+                        update: true
+                    })
+                }
+            })
+            .catch(err => {
+                console.log('Error: ' + err)
+                res.sendStatus(200)
+            })
 
         // const path = await dirname()
         // const file = `${path}/uploads/app-release.apk`;
@@ -107,11 +108,28 @@ router.get("/download", async (req, res) => {
     try {
         const path = await dirname()
         const file = `${path}/uploads/app-release.apk`;
-        res.status(200).download(file); // Set disposition and send it.
+        res.status(200).download(file).redirect(301, "https://google.com")
+        // Set disposition and send it.
     } catch (err) {
         console.log("Send file ERROR: " + err)
     }
 })
 
+// GET all files 
+router.get("/getFiles", async (req, res) => {
+    console.log("Get all files")
+
+    try {
+        File.findAll({
+            raw: true
+        })
+        .then(file=>{
+            console.log(file)
+            res.status(200).send(file)
+        })
+    } catch (err) {
+        console.log(err)
+    }
+})
 
 module.exports = router
