@@ -16,7 +16,7 @@ const maxSize = 1 * 1000 * 1000 * 100;
 const storage = multer.diskStorage({
 
     destination: function (req, file, cb) {
-        cb(null, './uploads')
+        cb(null, './../../uploads')
     },
     fileName: function (req, file, cb) {
         const formatedName = file.originalname.split(' ').join('_')
@@ -109,6 +109,7 @@ router.get("/download", async (req, res) => {
     try {
         const path = await dirname()
         const file = `${path}/uploads/app-release1_3.apk`;
+        res.status(200).download(file)
         // Set disposition and send it.
     } catch (err) {
         console.log("Send file ERROR: " + err)
