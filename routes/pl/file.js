@@ -108,7 +108,7 @@ router.get("/download", async (req, res) => {
     console.log("Download FILE ")
     try {
         const path = await dirname()
-        const file = `${path}/uploads/app-release1_3.apk`;
+        const file = `${path}/uploads/motopres.apk`;
         res.status(200).download(file)
         // Set disposition and send it.
     } catch (err) {
