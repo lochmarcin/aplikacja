@@ -338,11 +338,22 @@ router.put("/updateWeb/:id", async (req, res) => {
     console.log(req.body)
     const param = req.params.id
     console.log('Param: ' + param)
-
+    let notification = false
 
     let { users, company, part, indexx, quantity, price, band_number, note, collect_date, condition } = req.body
 
     console.log("Collect_date: " + collect_date)
+
+    await Todo.findOne({
+        raw: true,
+        where: {
+            id: param
+        }
+    })
+        .then(todo => {
+            collect_date != todo.collect_date ? notification = !notification : false
+        })
+
 
     await Todo.update({ users, company, collect_date, part, indexx, quantity, price, band_number, note, condition },
         {
@@ -351,8 +362,14 @@ router.put("/updateWeb/:id", async (req, res) => {
             }
         })
         .then(todos => {
-            console.log()
-            // console.log((todos[0] = 1) ? true : false)
+            console.log(notification)
+            if (notification) {
+                let notifi = {
+                    'title': "Zmieniono datę w zadaniu ",
+                    'body': `${part} - Nowa data odbioru: ${collect_date}`
+                }
+                firebaseNotifi(notifi)
+            }
             res.status(200).send((todos[0] = 1) ? true : false)
         })
         .catch(err => {
@@ -367,6 +384,8 @@ router.put("/update/:id", async (req, res) => {
     console.log(req.body)
     const param = req.params.id
     console.log('Param: ' + param)
+    let notification = false
+
 
 
     let { users, company, part, indexx, quantity, price, band_number, note, day, month, year } = req.body
@@ -384,6 +403,17 @@ router.put("/update/:id", async (req, res) => {
     let collect_date = `${year}-${month}-${day}`
     console.log("Collect_date: " + collect_date)
 
+    await Todo.findOne({
+        raw: true,
+        where: {
+            id: param
+        }
+    })
+        .then(todo => {
+            collect_date != todo.collect_date ? notification = !notification : false
+        })
+
+
     await Todo.update({ users, company, collect_date, part, indexx, quantity, price, band_number, note },
         {
             where: {
@@ -391,8 +421,15 @@ router.put("/update/:id", async (req, res) => {
             }
         })
         .then(todos => {
-            console.log((todos[0] = 1) ? "looks good" : "sometching is wrong")
-            res.status(200).send((todos[0] = 1) ? "looks good" : "sometching is wrong")
+            console.log(notification)
+            if (notification) {
+                let notifi = {
+                    'title': "Zmieniono datę w zadaniu ",
+                    'body': `${part} - Nowa data odbioru: ${collect_date}`
+                }
+                firebaseNotifi(notifi)
+            }
+            res.status(200).send((todos[0] = 1) ? true : false)
         })
         .catch(err => {
             console.log('Error: ' + err)
