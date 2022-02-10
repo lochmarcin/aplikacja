@@ -46,6 +46,15 @@ const Todo = db.define('todo', {
     },
     whoRestored: {
         type: Sequelize.STRING
+    },
+    deposit: {
+        type: Sequelize.BOOLEAN
+    },
+    time_morning: {
+        type: Sequelize.BOOLEAN
+    },
+    internal_id: {
+        type: Sequelize.STRING
     }
 })
 

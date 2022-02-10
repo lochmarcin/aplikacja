@@ -227,11 +227,11 @@ router.post("/add", async (req, res) => {
     console.log("----------------------------")
     authenticate(req, res)
     console.log("req.user: " + req.user.username)
-    // console.log(req.body)
+    console.log(req.body)
 
 
 
-    let { company, part, indexx, quantity, price, band_number, note, collect_date, condition } = req.body
+    let { company, part, indexx, quantity, price, band_number, note, collect_date, condition, internal_id, deposit, time_morning } = req.body
     let done = false
 
     try {
@@ -245,7 +245,7 @@ router.post("/add", async (req, res) => {
         console.log("Kto dodał: " + whoAdd)
 
         const result = await Todo.create({
-            company, collect_date, part, indexx, quantity, price, band_number, note, condition, done, whoAdd
+            company, collect_date, part, indexx, quantity, price, band_number, note, condition, done, whoAdd, internal_id, deposit, time_morning
         })
         console.log(result.dataValues)
         res.status(200).json(result.dataValues)
@@ -388,7 +388,7 @@ router.put("/update/:id", async (req, res) => {
 
 
 
-    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year } = req.body
+    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year, internal_id, deposit, time_morning } = req.body
 
     let check_day_length = day.toString().length
     let check_month_length = month.toString().length
@@ -414,7 +414,7 @@ router.put("/update/:id", async (req, res) => {
         })
 
 
-    await Todo.update({ users, company, collect_date, part, indexx, quantity, price, band_number, note },
+    await Todo.update({ users, company, collect_date, part, indexx, quantity, price, band_number, note, internal_id, deposit, time_morning },
         {
             where: {
                 id: param
