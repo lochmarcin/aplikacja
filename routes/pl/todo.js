@@ -185,7 +185,7 @@ router.post("/addNew", (req, res) => {
     console.log("----------------------------")
     console.log(req.body)
 
-    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year } = req.body
+    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year, internal_id, deposit, time_morning } = req.body
     let done = false
     let condition = "Nowe / używane"
 
@@ -202,7 +202,7 @@ router.post("/addNew", (req, res) => {
     console.log("Collect_date: " + collect_date)
 
     Todo.create({
-        users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, done
+        users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, done, internal_id, deposit, time_morning
     })
         .then(todo => {
             let notifi = {
@@ -269,7 +269,7 @@ router.post("/addReg", (req, res) => {
     console.log("----------------------------")
     console.log(req.body)
 
-    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year } = req.body
+    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year, internal_id, deposit, time_morning } = req.body
     let done = false
     let condition = "Regenerowane"
 
@@ -285,7 +285,7 @@ router.post("/addReg", (req, res) => {
     let collect_date = `${year}-${month}-${day}`
     console.log("Collect_date: " + collect_date)
     Todo.create({
-        users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, done
+        users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, done, internal_id, deposit, time_morning
     })
         .then(todo => {
             let notifi = {
