@@ -80,7 +80,8 @@ router.post("/check", async (req, res) => {
                 console.log(file)
                 req.body.version == file ? console.log(true) : console.log(false)
 
-                if (req.body.version == file) {
+                // if (req.body.version == file) {
+                if (req.body.version == 100) {
                     res.status(200).send({
                         update: false
                     })
