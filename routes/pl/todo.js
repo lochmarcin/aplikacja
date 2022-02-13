@@ -340,7 +340,7 @@ router.put("/updateWeb/:id", async (req, res) => {
     console.log('Param: ' + param)
     let notification = false
 
-    let { users, company, part, indexx, quantity, price, band_number, note, collect_date, condition } = req.body
+    let { users, company, part, indexx, quantity, price, band_number, note, collect_date, condition, internal_id, deposit, time_morning } = req.body
 
     console.log("Collect_date: " + collect_date)
 
@@ -355,7 +355,7 @@ router.put("/updateWeb/:id", async (req, res) => {
         })
 
 
-    await Todo.update({ users, company, collect_date, part, indexx, quantity, price, band_number, note, condition },
+    await Todo.update({ users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, internal_id, deposit, time_morning },
         {
             where: {
                 id: param
