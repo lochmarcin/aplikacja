@@ -16,7 +16,7 @@ const maxSize = 1 * 1000 * 1000 * 100;
 const storage = multer.diskStorage({
 
     destination: function (req, file, cb) {
-        cb(null, './../../uploads')
+        cb(null, './uploads')
     },
     fileName: function (req, file, cb) {
         const formatedName = file.originalname.split(' ').join('_')
@@ -47,12 +47,40 @@ const upload = multer({
     // }
 })
 
-
-router.post("/addApk", upload.single('apk'), async (req, res) => {
+// chceck folder exist  
+router.get("/folder", async (req, res) => {
     try {
         fs.access('./uploads', (err) => {
             if (err) {
+                console.log("NO folder exist")
                 fs.mkdirSync('./uploads')
+                res.status(200).send("NO folder exist")
+            }
+            else {
+                console.log("folder exist")
+                res.status(200).send("YES folder exist")
+            }
+        })
+        if (req.file == null) {
+            console.log("Brak pliku lub req.file == null")
+            return null
+        }
+
+        console.log(req.file)
+
+        // console.log("Filename: " + fileName)
+
+    } catch (err) {
+        console.log(err)
+    }
+})
+
+
+router.post("/addApk", upload.single('apk'), async (req, res) => {
+    try {
+        fs.access('./../uploads', (err) => {
+            if (err) {
+                fs.mkdirSync('./../uploads')
             }
         })
         if (req.file == null) {
@@ -104,6 +132,7 @@ router.post("/check", async (req, res) => {
         console.log("Send file ERROR: " + err)
     }
 })
+
 // Mobile SEND FILE TO DOWNLOAD
 router.get("/download", async (req, res) => {
     console.log("Download FILE ")
@@ -133,5 +162,8 @@ router.get("/getFiles", async (req, res) => {
         console.log(err)
     }
 })
+
+router.use('/', (req, res)=> res.send("jesteś w uploads"))
+
 
 module.exports = router
