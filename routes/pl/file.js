@@ -3,6 +3,7 @@ const router = express.Router()
 const fs = require("fs")
 const File = require("../../models/file")
 const dirname = require("../../dirname")
+const path = require('path');
 // const http = require("http");
 // const dasda = require("./../../uploads")
 
@@ -18,62 +19,70 @@ const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads')
     },
-    fileName: function (req, file, cb) {
+    filename: function (req, file, cb) {
         const formatedName = file.originalname.split(' ').join('_')
         const fileName = new Date().toISOString().replace(/:/gi, '-') + '_' + formatedName
         cb(null, `${fileName}.apk`)
     }
-
-}
-)   
-const upload = multer({
-    storage,
-    limits: { fileSize: maxSize }
-    // fileFilter: function (req, file, cb) {
-
-    //     // Set the filetypes, it is optional
-    //     var filetypes = /jpeg|jpg|png/;
-    //     var mimetype = filetypes.test(file.mimetype);
-
-    //     // var extname = filetypes.test(path.extname(
-    //     //             file.originalname).toLowerCase());
-
-    //     //     if (mimetype && extname) {
-    //     //         return cb(null, true);
-    //     //     }
-
-    //     //     cb("Error: File upload only supports the "
-    //     //             + "following filetypes - " + filetypes);
-    // }
 })
+
+const upload = multer({
+    limits: { fileSize: maxSize },
+    fileFilter: function (req, file, cb) {
+        var filetypes = /apk|avi|png/;
+        var mimetype = filetypes.test(file.mimetype);
+        var extname = filetypes.test(path.extname(
+            file.originalname).toLowerCase());
+
+        if (mimetype && extname) {
+            res.status(200).send("Błąd, akceptowane formaty plików: /apk|avi|png/")
+            // return cb(null, true);
+        }
+        
+        // cb("Error: File upload only supports the "
+        //     + "following filetypes - " + filetypes);
+    },
+    storage
+})
+
+const checkFileType = (file) =>{
+    var filetypes = /apk|avi|png/;
+        var mimetype = filetypes.test(file.mimetype);
+        var extname = filetypes.test(path.extname(
+            file.originalname).toLowerCase());
+
+        if (mimetype && extname) {
+            return false;
+        }
+        else
+            return true
+}
 
 // chceck folder exist  
-router.get("/folder", async (req, res) => {
-    try {
-        fs.access('./uploads', (err) => {
-            if (err) {
-                console.log("NO folder exist")
-                fs.mkdirSync('./uploads')
-                res.status(200).send("NO folder exist")
-            }
-            else {
-                console.log("folder exist")
-                res.status(200).send("YES folder exist")
-            }
-        })
-        if (req.file == null) {
-            console.log("Brak pliku lub req.file == null")
-            return null
-        }
+// router.get("/folder", async (req, res) => {
+//     try {
+//         fs.access('./uploads', (err) => {
+//             if (err) {
+//                 console.log("NO folder exist")
+//                 fs.mkdirSync('./uploads')
+//                 res.status(200).send("NO folder exist")
+//             }
+//             else {
+//                 console.log("folder exist")
+//                 res.status(200).send("YES folder exist")
+//             }
+//         })
+//         if (req.file == null) {
+//             console.log("Brak pliku lub req.file == null")
+//             return null
+//         }
 
-        console.log(req.file)
+//         console.log(req.file)
 
-        // console.log("Filename: " + fileName)
-
-    } catch (err) {
-        console.log(err)
-    }
-})
+//     } catch (err) {
+//         console.log(err)
+//     }
+// })
 
 
 router.post("/addApk", upload.single('apk'), async (req, res) => {
@@ -87,11 +96,9 @@ router.post("/addApk", upload.single('apk'), async (req, res) => {
             console.log("Brak pliku lub req.file == null")
             return null
         }
-
-        console.log(req.file)
-
-        // console.log("Filename: " + fileName)
-
+        if(!checkFileType(req.file))
+            res.status(200).send("Błąd, akceptowane formaty plików: /apk|avi|png/")
+        // console.log(req.file)
     } catch (err) {
         console.log(err)
     }
@@ -154,16 +161,16 @@ router.get("/getFiles", async (req, res) => {
         File.findAll({
             raw: true
         })
-        .then(file=>{
-            console.log(file)
-            res.status(200).send(file)
-        })
+            .then(file => {
+                console.log(file)
+                res.status(200).send(file)
+            })
     } catch (err) {
         console.log(err)
     }
 })
 
-router.use('/', (req, res)=> res.send("jesteś w uploads"))
+router.use('/', (req, res) => res.send("jesteś w uploads"))
 
 
 module.exports = router
