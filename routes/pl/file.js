@@ -33,29 +33,36 @@ const upload = multer({
         var mimetype = filetypes.test(file.mimetype);
         var extname = filetypes.test(path.extname(
             file.originalname).toLowerCase());
+        console.log("mimetype: " + mimetype)
+        console.log("extname: " + extname)
 
-        if (mimetype && extname) {
-            res.status(200).send("Błąd, akceptowane formaty plików: /apk|avi|png/")
+        if (mimetype && extname == false) {
+            // console.log("Błąd, akceptowane formaty plików: /apk|avi|png/")
+            // res.status(200).send("Błąd, akceptowane formaty plików: /apk|avi|png/")
+            console.log("Forbidden extension")
+            req.fileValidationError = "Forbidden extension";
+            return cb(null, false , req.fileValidationError);
+
             // return cb(null, true);
         }
-        
+        cb(null , true);
         // cb("Error: File upload only supports the "
         //     + "following filetypes - " + filetypes);
     },
     storage
 })
 
-const checkFileType = (file) =>{
+const checkFileType = (file) => {
     var filetypes = /apk|avi|png/;
-        var mimetype = filetypes.test(file.mimetype);
-        var extname = filetypes.test(path.extname(
-            file.originalname).toLowerCase());
+    var mimetype = filetypes.test(file.mimetype);
+    var extname = filetypes.test(path.extname(
+        file.originalname).toLowerCase());
 
-        if (mimetype && extname) {
-            return false;
-        }
-        else
-            return true
+    if (mimetype && extname) {
+        return false;
+    }
+    else
+        return true
 }
 
 // chceck folder exist  
@@ -86,6 +93,9 @@ const checkFileType = (file) =>{
 
 
 router.post("/addApk", upload.single('apk'), async (req, res) => {
+
+    // https://stackoverflow.com/questions/56464707/how-to-redirect-back-to-a-page-when-wrong-file-type-has-been-uploaded-via-multer
+
     try {
         fs.access('./../uploads', (err) => {
             if (err) {
@@ -96,9 +106,14 @@ router.post("/addApk", upload.single('apk'), async (req, res) => {
             console.log("Brak pliku lub req.file == null")
             return null
         }
-        if(!checkFileType(req.file))
+
+        if (req.fileValidationError) {
+            console.log("Zły typ plików !")
             res.status(200).send("Błąd, akceptowane formaty plików: /apk|avi|png/")
-        // console.log(req.file)
+        }
+        // if (!checkFileType(req.file))
+        //     res.status(200).send("Błąd, akceptowane formaty plików: /apk|avi|png/")
+        // // console.log(req.file)
     } catch (err) {
         console.log(err)
     }
