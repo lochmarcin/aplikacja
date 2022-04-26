@@ -22,48 +22,39 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
         const formatedName = file.originalname.split(' ').join('_')
         const fileName = new Date().toISOString().replace(/:/gi, '-') + '_' + formatedName
-        cb(null, `${fileName}.apk`)
+        // cb(null, `${fileName}.apk`) - Dla produkcji - wymuszanie APK
+
+        cb(null, `${fileName}`)
+
     }
 })
 
 const upload = multer({
     limits: { fileSize: maxSize },
+    storage,
     fileFilter: function (req, file, cb) {
         var filetypes = /apk|avi|png/;
         var mimetype = filetypes.test(file.mimetype);
-        var extname = filetypes.test(path.extname(
-            file.originalname).toLowerCase());
+        // var extname = filetypes.test(path.extname(
+        //     file.originalname).toLowerCase());
         console.log("mimetype: " + mimetype)
-        console.log("extname: " + extname)
+        // console.log("extname: " + extname)
 
-        if (mimetype && extname == false) {
+        if (mimetype == false) {
             // console.log("Błąd, akceptowane formaty plików: /apk|avi|png/")
             // res.status(200).send("Błąd, akceptowane formaty plików: /apk|avi|png/")
             console.log("Forbidden extension")
             req.fileValidationError = "Forbidden extension";
-            return cb(null, false , req.fileValidationError);
+            return cb(null, false, req.fileValidationError);
 
             // return cb(null, true);
         }
-        cb(null , true);
-        // cb("Error: File upload only supports the "
-        //     + "following filetypes - " + filetypes);
-    },
-    storage
+        // req.filenewname = extname
+        cb(null, true);
+
+    }
 })
 
-const checkFileType = (file) => {
-    var filetypes = /apk|avi|png/;
-    var mimetype = filetypes.test(file.mimetype);
-    var extname = filetypes.test(path.extname(
-        file.originalname).toLowerCase());
-
-    if (mimetype && extname) {
-        return false;
-    }
-    else
-        return true
-}
 
 // chceck folder exist  
 // router.get("/folder", async (req, res) => {
@@ -102,18 +93,42 @@ router.post("/addApk", upload.single('apk'), async (req, res) => {
                 fs.mkdirSync('./../uploads')
             }
         })
-        if (req.file == null) {
+
+        // console.log(req.file.originalname)
+
+        if (req.fileValidationError) {
+            console.log("Zły typ plików !")
+            res.status(200).send("Błąd, akceptowane formaty plików: apk, avi, png")
+        }
+        else if (req.file == null) {
             console.log("Brak pliku lub req.file == null")
             return null
         }
 
-        if (req.fileValidationError) {
-            console.log("Zły typ plików !")
-            res.status(200).send("Błąd, akceptowane formaty plików: /apk|avi|png/")
+
+        const formatedName = req.file.originalname.split(' ').join('_')
+        const fileName = new Date().toISOString().replace(/:/gi, '-') + '_' + formatedName
+        console.log("Nazwa Pliku: " + fileName)
+        
+        try {
+            const filePath = `${path}/uploads/`;
+
+
+            File.create({
+                raw: true
+            })
+                .then(file => {
+                    console.log(file)
+                    res.status(200).send(file)
+                })
+        } catch (err) {
+            console.log(err)
         }
-        // if (!checkFileType(req.file))
-        //     res.status(200).send("Błąd, akceptowane formaty plików: /apk|avi|png/")
-        // // console.log(req.file)
+
+
+
+
+
     } catch (err) {
         console.log(err)
     }
