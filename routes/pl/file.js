@@ -109,29 +109,61 @@ router.post("/addApk", upload.single('apk'), async (req, res) => {
         const formatedName = req.file.originalname.split(' ').join('_')
         const fileName = new Date().toISOString().replace(/:/gi, '-') + '_' + formatedName
         console.log("Nazwa Pliku: " + fileName)
-        
+        let wersja
+        // Sprawdzanie Największej wersji aplikacji
         try {
-            const filePath = `${path}/uploads/`;
-
-
-            File.create({
-                raw: true
-            })
+            File.max('wersja')
                 .then(file => {
-                    console.log(file)
-                    res.status(200).send(file)
+                    console.log("NAjnowsza wersja w bazie to: " + file)
+                    wersja = file
+
+                    const url = `/uploads/${fileName}`;
+                    console.log(wersja)
+                    wersja += 0.1
+                    wersja = wersja.toFixed(1) * 1
+                    console.log(wersja)
+                    // console.log(typeof(wersja))
+                    const actual = false
+                    try {
+            
+                            File.create({
+                                wersja, url, actual
+                            })
+                                .then(file => {
+                                    file.dataValues['sendStatus']="Wysłano - 100"
+                                    console.log("File: " , file)
+                                    res.status(200).send(file)
+                                })
+                        } catch (err) {
+                            console.log("Error - Dodawanie wpisu no nowej wersji aplikacji: " + err)
+                        }
                 })
+                .catch(err => {
+                    console.log('Error - Sprzwdzanie wersji: ' + err)
+                })
+
         } catch (err) {
-            console.log(err)
+            console.log("Send file ERROR: " + err)
         }
 
-
-
-
-
+        // Wysyłanie info do bazy o nowym uploadzie 
+        // try {
+            
+        //     // File.create({
+        //     //     wersja, url, actual
+        //     // })
+        //     //     .then(file => {
+        //     //         console.log(file)
+        //     //         res.status(200).send(file)
+        //     //     })
+        // } catch (err) {
+        //     console.log("Error - Dodawanie wpisu no nowej wersji aplikacji: " + err)
+        // }
     } catch (err) {
-        console.log(err)
+        console.log("Error - AddAPK: " + err)
     }
+    // res.status(200).send("Wysłano - 100")
+
 })
 
 
@@ -189,7 +221,10 @@ router.get("/getFiles", async (req, res) => {
 
     try {
         File.findAll({
-            raw: true
+            raw: true,
+            order: [
+                ['id', 'DESC']
+            ]
         })
             .then(file => {
                 console.log(file)
