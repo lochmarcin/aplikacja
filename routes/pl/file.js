@@ -131,6 +131,7 @@ router.post("/addApk", upload.single('apk'), async (req, res) => {
                             })
                                 .then(file => {
                                     file.dataValues['sendStatus']="Wysłano - 100"
+                                    file.dataValues['sendFile']=true
                                     console.log("File: " , file)
                                     res.status(200).send(file)
                                 })
