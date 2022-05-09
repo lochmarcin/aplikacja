@@ -114,7 +114,7 @@ router.post("/addApk", upload.single('apk'), async (req, res) => {
         try {
             File.max('wersja')
                 .then(file => {
-                    console.log("NAjnowsza wersja w bazie to: " + file)
+                    console.log("Najnowsza wersja w bazie to: " + file)
                     wersja = file
 
                     const url = `/uploads/${fileName}`;
