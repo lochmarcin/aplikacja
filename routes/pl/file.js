@@ -117,7 +117,7 @@ router.post("/addApk", upload.single('apk'), async (req, res) => {
                     console.log("Najnowsza wersja w bazie to: " + file)
                     wersja = file
 
-                    const url = `/uploads/${fileName}`;
+                    const url = `${fileName}`;
                     console.log(wersja)
                     wersja += 0.1
                     wersja = wersja.toFixed(1) * 1
@@ -125,19 +125,19 @@ router.post("/addApk", upload.single('apk'), async (req, res) => {
                     // console.log(typeof(wersja))
                     const actual = false
                     try {
-            
-                            File.create({
-                                wersja, url, actual
+
+                        File.create({
+                            wersja, url, actual
+                        })
+                            .then(file => {
+                                file.dataValues['sendStatus'] = "Wysłano - 100"
+                                file.dataValues['sendFile'] = true
+                                console.log("File: ", file)
+                                res.status(200).send(file)
                             })
-                                .then(file => {
-                                    file.dataValues['sendStatus']="Wysłano - 100"
-                                    file.dataValues['sendFile']=true
-                                    console.log("File: " , file)
-                                    res.status(200).send(file)
-                                })
-                        } catch (err) {
-                            console.log("Error - Dodawanie wpisu no nowej wersji aplikacji: " + err)
-                        }
+                    } catch (err) {
+                        console.log("Error - Dodawanie wpisu no nowej wersji aplikacji: " + err)
+                    }
                 })
                 .catch(err => {
                     console.log('Error - Sprzwdzanie wersji: ' + err)
@@ -149,7 +149,7 @@ router.post("/addApk", upload.single('apk'), async (req, res) => {
 
         // Wysyłanie info do bazy o nowym uploadzie 
         // try {
-            
+
         //     // File.create({
         //     //     wersja, url, actual
         //     // })
@@ -204,12 +204,40 @@ router.post("/check", async (req, res) => {
 })
 
 // Mobile SEND FILE TO DOWNLOAD
-router.get("/download", async (req, res) => {
+// router.get("/download", async (req, res) => {
+//     console.log("Download FILE ")
+//     try {
+//         const path = await dirname()
+//         const file = `${path}/uploads/2022-05-11T11-20-24.906Z_MArcin_Łoch123_#_@.avi`;
+//         res.status(200).download(file)
+//         // Set disposition and send it.
+//     } catch (err) {
+//         console.log("Send file ERROR: " + err)
+//     }
+// })
+
+// Mobile SEND FILE TO DOWNLOAD
+router.get("/download/:id", async (req, res) => {
+    console.log("Param: " + req.params.id)
     console.log("Download FILE ")
     try {
-        const path = await dirname()
-        const file = `${path}/uploads/motopres.apk`;
-        res.status(200).download(file)
+        File.findOne({
+            where: {
+                id: req.params.id
+            }
+        })
+            .then(todo => {
+                console.log(todo)
+                // const path = await dirname()
+                // const file = `${path}/uploads/2022-05-11T11-20-24.906Z_MArcin_Łoch123_#_@.avi`;
+                // res.status(200).download(file)
+            })
+            .catch(err => {
+                console.log('Error: ' + err)
+                res.sendStatus(400)
+            })
+
+
         // Set disposition and send it.
     } catch (err) {
         console.log("Send file ERROR: " + err)

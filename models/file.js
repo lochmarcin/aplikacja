@@ -8,6 +8,9 @@ const File = db.define('update', {
     url: {
         type: Sequelize.STRING
     },
+    actual: {
+        type: Sequelize.STRING
+    },
     createdAt: {
         type: Sequelize.DATE
     },
