@@ -9,10 +9,11 @@ const path = require('path');
 
 const authenticate = require('./../../services/authenticate')
 
+let fileName
 
 const multer = require("multer")
 
-const maxSize = 1 * 1000 * 1000 * 100;
+const maxSize = 1 * 1000 * 1000 * 100*10;
 
 const storage = multer.diskStorage({
 
@@ -21,7 +22,7 @@ const storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         const formatedName = file.originalname.split(' ').join('_')
-        const fileName = new Date().toISOString().replace(/:/gi, '-') + '_' + formatedName
+        fileName = new Date().toISOString().replace(/:/gi, '-') + '_' + formatedName
         // cb(null, `${fileName}.apk`) - Dla produkcji - wymuszanie APK
 
         cb(null, `${fileName}`)
@@ -106,8 +107,8 @@ router.post("/addApk", upload.single('apk'), async (req, res) => {
         }
 
 
-        const formatedName = req.file.originalname.split(' ').join('_')
-        const fileName = new Date().toISOString().replace(/:/gi, '-') + '_' + formatedName
+        // const formatedName = req.file.originalname.split(' ').join('_')
+        // const fileName = new Date().toISOString().replace(/:/gi, '-') + '_' + formatedName
         console.log("Nazwa Pliku: " + fileName)
         let wersja
         // Sprawdzanie Największej wersji aplikacji
@@ -221,22 +222,23 @@ router.get("/download/:id", async (req, res) => {
     console.log("Param: " + req.params.id)
     console.log("Download FILE ")
     try {
+        const path = await dirname()
+
         File.findOne({
+            raw: true,
             where: {
                 id: req.params.id
             }
         })
             .then(todo => {
-                console.log(todo)
-                // const path = await dirname()
-                // const file = `${path}/uploads/2022-05-11T11-20-24.906Z_MArcin_Łoch123_#_@.avi`;
-                // res.status(200).download(file)
+                console.log(todo.url)
+                const file = `${path}/uploads/${todo.url}`;
+                res.status(200).download(file)
             })
             .catch(err => {
                 console.log('Error: ' + err)
                 res.sendStatus(400)
             })
-
 
         // Set disposition and send it.
     } catch (err) {
