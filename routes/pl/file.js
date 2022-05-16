@@ -13,7 +13,7 @@ let fileName
 
 const multer = require("multer")
 
-const maxSize = 1 * 1000 * 1000 * 100*10;
+const maxSize = 1 * 1000 * 1000 * 100 * 10;
 
 const storage = multer.diskStorage({
 
@@ -217,7 +217,69 @@ router.post("/check", async (req, res) => {
 //     }
 // })
 
-// Mobile SEND FILE TO DOWNLOAD
+router.put("/updateActualFile/:id", async (req, res) => {
+    console.log("Param: " + req.params.id)
+    const id = req.params.id
+
+    try {
+        const result = await File.update(
+            { actual: false },
+            {
+                where: {
+                    actual: true
+                }
+            }
+        );
+    } catch (err) {
+        console.log("Error at change file to active=false: " + err)
+    }
+
+    try {
+        const result = await File.update(
+            { actual: true },
+            {
+                where: {
+                    id: id
+                }
+            }
+        )
+    console.log(result)
+    res.status(200).send(result)
+    } catch (err) {
+        console.log("Error on /updateActualFile/:id = " + err)
+    }
+})
+
+//Download Main apk 
+router.get("/downloadMain", async (req, res) => {
+    console.log("Param: " + req.params.id)
+    console.log("Download FILE ")
+    try {
+        const path = await dirname()
+
+        File.findOne({
+            raw: true,
+            where: {
+                actual:true
+            }
+        })
+            .then(todo => {
+                console.log(todo.url)
+                const file = `${path}/uploads/${todo.url}`;
+                res.status(200).download(file)
+            })
+            .catch(err => {
+                console.log('Error: ' + err)
+                res.sendStatus(400)
+            })
+
+        // Set disposition and send it.
+    } catch (err) {
+        console.log("Send file ERROR: " + err)
+    }
+})
+
+// DOWNLOAD file from web - sendApkFile
 router.get("/download/:id", async (req, res) => {
     console.log("Param: " + req.params.id)
     console.log("Download FILE ")
