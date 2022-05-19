@@ -25,10 +25,11 @@ app.use(
         "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
         // 'Access-Control-Allow-Origin': '*',
         // 'Access-Control-Allow-Private-Network': true,
+        headers: "Origin, X-Requested-With, Content-Type, Accept",
         "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
-        'Access-Control-Allow-Origin': ["http://51.83.134.120","http://tebuty.pl","http://motopres.tebuty.pl","http://localhost:3000","http://127.0.0.1:3000","http://192.168.1.143:8081"],
-        // origin: ["http://tebuty.pl","http://motopres.tebuty.pl","http://localhost:3000","http://127.0.0.1:3000","http://192.168.1.143:8081"],
-        origin: true
+        // 'Access-Control-Allow-Origin': ["http://51.83.134.120","http://tebuty.pl","http://motopres.tebuty.pl","http://localhost:3000","http://127.0.0.1:3000","http://192.168.1.143:8081"],
+        origin: ["http://51.83.134.120","http://tebuty.pl","http://motopres.tebuty.pl","http://localhost:3000","http://127.0.0.1:3000","http://192.168.1.143:8081"],
+        // origin: true
     })
 )
 
