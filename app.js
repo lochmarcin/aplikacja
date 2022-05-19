@@ -20,6 +20,7 @@ app.use(cookieParser())
 app.use(
     cors({
         origin: [
+            "51.83.134.120",
             "http://51.83.134.120",
             "http://tebuty.pl",
             "http://motopres.tebuty.pl",
