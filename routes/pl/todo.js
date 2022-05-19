@@ -423,6 +423,7 @@ router.put("/update/:id", async (req, res) => {
         .then(todos => {
             console.log(notification)
             if (notification) {
+                console.log("🚀 ~ file: todo.js ~ line 426 ~ router.put ~ notification", notification)
                 let notifi = {
                     'title': "Zmieniono datę w zadaniu ",
                     'body': `${part} - Nowa data odbioru: ${collect_date}`
