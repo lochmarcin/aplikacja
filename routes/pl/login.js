@@ -151,7 +151,8 @@ router.post('/login', async (req, res, next) => {
 
         res.cookie('JWT', accessToken, {
             maxAge: 86400000,
-            httpOnly: true
+            httpOnly: true,
+            sameSite: 'Strict'
         })
 
         console.log("Wysłałem tokena: " + accessToken)
@@ -204,7 +205,7 @@ router.post('/refresh', (req, res) => {
 })
 
 router.delete("/logout", async (req, res) => {
-    // res.cookie('JWT', "-");
+    res.cookie('JWT', "-");
     res.clearCookie("JWT")
     console.log("WYLOGOWANIE !!!")
     console.log("logout: ", req.cookies)
