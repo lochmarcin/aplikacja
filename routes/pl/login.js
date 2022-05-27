@@ -27,7 +27,8 @@ router.get("/me", async (req, res) => {
     if (req.user == null) {
         console.log("Brak zalogowanego uzytkownika")
         res.status(200).send({
-            logged: false
+            logged: false,
+            msg: "No Auth Cookie :("
         })
     }
     else {
