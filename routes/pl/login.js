@@ -38,7 +38,6 @@ router.get("/me", async (req, res) => {
         res.status(200).send(user)
 
         // res.status(200).send(req.user)
-
     }
 
 })
@@ -153,7 +152,8 @@ router.post('/login', async (req, res, next) => {
         res.cookie('JWT', accessToken, {
             maxAge: 86400000,
             httpOnly: true,
-            sameSite: 'Strict'
+            secure: true,
+            sameSite: 'None'
         })
 
         console.log("Wysłałem tokena: " + accessToken)
@@ -206,12 +206,18 @@ router.post('/refresh', (req, res) => {
 })
 
 router.delete("/logout", async (req, res) => {
-    res.cookie('JWT', "-");
-    res.clearCookie("JWT")
+    res.cookie('JWT', null ,{
+        httpOnly: true,
+        secure: true,
+        sameSite: 'None'
+    });
+    // res.clearCookie('JWT')
+    // res.cookie('JWT', null)
     console.log("WYLOGOWANIE !!!")
     console.log("logout: ", req.cookies)
-    console.log(req.user)
+    console.log("req.user:", req.user)
     res.status(200).json({
+        logged: false,
         message: "Logged out successfully"
     })
 })

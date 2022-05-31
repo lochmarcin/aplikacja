@@ -26,7 +26,9 @@ app.use(
             "http://motopres.tebuty.pl",
             "http://localhost:3000",
             "http://127.0.0.1:3000",            
-            "http://192.168.1.143:8081"
+            "http://192.168.1.143:8081",
+            "https://localhost:3000",
+            "https://127.0.0.1:3000"            
         ],
         allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
         credentials: true,

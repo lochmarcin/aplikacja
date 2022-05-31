@@ -14,13 +14,14 @@ function authenticate(req, res, next) {
                     logged: false
                 })
             }
-
+            else{
             req.user = user
             console.log("autchenticate: " + user.username)
             console.log("req.user.id: " + user.user_id)
             // console.log("req.user.lastname: " + user.lastname)
 
             return (req.user)
+            }
 
         })
     }
