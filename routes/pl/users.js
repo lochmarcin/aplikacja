@@ -157,6 +157,30 @@ router.put('/update/:id', async (req, res) => {
     }
 })
 
+// Change Password 
+router.put('/changePassword/:id', async (req, res) => {
+    console.log(req.body)
+    console.log(req.params.id)
+    const {Oldpassword, newPassword, newPassword2 } = req.body
+    console.log("password: " + password)
+    const id = req.params.id
+
+
+    if (newPassword !== newPassword2) {
+        console.log("Two diffrent New Passwords")
+        let response = {}
+        response.wrongOldPassword=false
+        response.TwoDiffrentNewPasswords=true
+        response.msg="Wpisane są dwa różne hasła !"
+        
+        res.status(200).send(response)
+    }
+    else {
+        res.status(200).send(false)
+    }
+})
+
+
 
 
 module.exports = router
