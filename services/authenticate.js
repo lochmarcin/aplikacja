@@ -6,6 +6,8 @@ function authenticate(req, res, next) {
     console.log(req.cookies)
     if (token == null)
         console.log("token null")
+    if (token == '')
+        console.log("token ''")
     else {
         jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
             if (err) {
@@ -14,13 +16,13 @@ function authenticate(req, res, next) {
                     logged: false
                 })
             }
-            else{
-            req.user = user
-            console.log("autchenticate: " + user.username)
-            console.log("req.user.id: " + user.user_id)
-            // console.log("req.user.lastname: " + user.lastname)
+            else {
+                req.user = user
+                console.log("autchenticate: " + user.username)
+                console.log("req.user.id: " + user.user_id)
+                // console.log("req.user.lastname: " + user.lastname)
 
-            return (req.user)
+                return (req.user)
             }
 
         })

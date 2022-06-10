@@ -114,9 +114,9 @@ router.put('/update/:id', async (req, res) => {
     console.log(req.body)
     console.log(req.params.id)
     const { firstname, lastname, username, password, isEditor, isAdmin } = req.body
-    // console.log("password: " + password)
+    console.log("password: " + password)
     const id = req.params.id
-    if (password === '') {
+    if (password === '' || password === undefined || password === null) {
         console.log("bez hasła")
         Users.update({
             firstname: firstname,
@@ -133,7 +133,7 @@ router.put('/update/:id', async (req, res) => {
         )
         res.status(200).send(true)
     }
-    else if (password !== '') {
+    else if (password !== '' || password!==null) {
         console.log("Zmiana hasła")
         const hash = await bcrypt.hash(password, 10)
         Users.update({

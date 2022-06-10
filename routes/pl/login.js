@@ -32,7 +32,7 @@ router.get("/me", async (req, res) => {
         })
     }
     else {
-        console.log("req.user.username: " + req.user.username)
+        console.log("req.user.username: " , req.user.username)
         let user = req.user
         user.logged = true
         res.status(200).send(user)
@@ -132,7 +132,7 @@ router.post('/login', async (req, res, next) => {
             })
 
         const refreshToken = jwt.sign({ user_id: result.dataValues.id, username: result.dataValues.username }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: 525600 })
-    
+
 
         // Save refresh Token in DB
         try {
@@ -206,7 +206,8 @@ router.post('/refresh', (req, res) => {
 })
 
 router.delete("/logout", async (req, res) => {
-    res.cookie('JWT', null ,{
+
+    res.cookie('JWT', "", {
         httpOnly: true,
         secure: true,
         sameSite: 'None'
@@ -221,6 +222,6 @@ router.delete("/logout", async (req, res) => {
         message: "Logged out successfully"
     })
 })
-
+ 
 
 module.exports = router
