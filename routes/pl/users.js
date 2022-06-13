@@ -5,6 +5,8 @@ const bcrypt = require('bcryptjs')
 const authenticate = require('./../../services/authenticate')
 const Users = require('../../models/users')
 
+
+
 router.get('/get', (req, res) => {
     console.log('pobieranie użytkowników')
 
@@ -133,7 +135,7 @@ router.put('/update/:id', async (req, res) => {
         )
         res.status(200).send(true)
     }
-    else if (password !== '' || password!==null) {
+    else if (password !== '' || password !== null) {
         console.log("Zmiana hasła")
         const hash = await bcrypt.hash(password, 10)
         Users.update({
@@ -161,21 +163,74 @@ router.put('/update/:id', async (req, res) => {
 router.put('/changePassword/:id', async (req, res) => {
     console.log(req.body)
     console.log(req.params.id)
-    const {Oldpassword, newPassword, newPassword2 } = req.body
-    console.log("password: " + password)
+    const { oldPassword, firstNewPass, secondNewPass } = req.body
+    console.log("oldPassword: " + oldPassword )
+    console.log("firstNewPass: " + firstNewPass )
+    console.log("secondNewPass: " + secondNewPass )
+
     const id = req.params.id
 
 
-    if (newPassword !== newPassword2) {
+    if (firstNewPass !== secondNewPass) {
         console.log("Two diffrent New Passwords")
         let response = {}
-        response.wrongOldPassword=false
-        response.TwoDiffrentNewPasswords=true
-        response.msg="Wpisane są dwa różne hasła !"
-        
+        response.wrongOldPassword = false
+        response.TwoDiffrentNewPasswords = true
+        response.msg = "Wpisane są dwa różne hasła !"
         res.status(200).send(response)
     }
     else {
+
+        let dbPassword
+        let result
+        try {
+            result = await User.findOne({
+                where: {
+                    id: id
+                }
+            })
+            if (result == null) {
+                res.status(200).json({
+                    msg: "No user find to change password"
+                })
+            }
+            else {
+                console.log("Znaleziono: " + result.username)
+                console.log("Hasło z bazy: " + result.password)
+                dbPassword = result.password
+                console.log(dbPassword)
+
+            }
+        } catch (e) {
+            console.log("Login Error" + e)
+            res.sendStatus(200).json({
+                msg: "Error in find user :("
+            })
+            return 0
+        }
+
+
+        const validPassword = await bcrypt.compare(pasfirstNewPasssword, dbPassword)
+        if (validPassword) {
+            const hash = await bcrypt.hash(firstNewPass, 10)
+            try {
+                result = await User.update(
+                    {
+                        password: hash
+                    },
+                    {
+                        where: {
+                            id: id
+                        }
+                    })
+                console.log("RESULT from update change password: " + result)
+                res.status(200).send(result)
+            } catch (error) {
+                console.log("Error at change pass to db: " + error)
+            }
+        }
+
+
         res.status(200).send(false)
     }
 })
