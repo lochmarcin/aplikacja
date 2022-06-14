@@ -164,9 +164,9 @@ router.put('/changePassword/:id', async (req, res) => {
     console.log(req.body)
     console.log(req.params.id)
     const { oldPassword, firstNewPass, secondNewPass } = req.body
-    console.log("oldPassword: " + oldPassword )
-    console.log("firstNewPass: " + firstNewPass )
-    console.log("secondNewPass: " + secondNewPass )
+    console.log("oldPassword: " + oldPassword)
+    console.log("firstNewPass: " + firstNewPass)
+    console.log("secondNewPass: " + secondNewPass)
 
     const id = req.params.id
 
@@ -184,7 +184,7 @@ router.put('/changePassword/:id', async (req, res) => {
         let dbPassword
         let result
         try {
-            result = await User.findOne({
+            result = await Users.findOne({
                 where: {
                     id: id
                 }
@@ -210,11 +210,12 @@ router.put('/changePassword/:id', async (req, res) => {
         }
 
 
-        const validPassword = await bcrypt.compare(pasfirstNewPasssword, dbPassword)
+        const validPassword = await bcrypt.compare(oldPassword, dbPassword)
         if (validPassword) {
             const hash = await bcrypt.hash(firstNewPass, 10)
+            console.log("New Pass Hash: " + hash)
             try {
-                result = await User.update(
+                result = await Users.update(
                     {
                         password: hash
                     },
@@ -224,14 +225,23 @@ router.put('/changePassword/:id', async (req, res) => {
                         }
                     })
                 console.log("RESULT from update change password: " + result)
-                res.status(200).send(result)
+                let response = {}
+                response.changedPass = true
+                response.msg = "Hasło zostało zmienione"
+                res.status(200).send(response)
+
             } catch (error) {
                 console.log("Error at change pass to db: " + error)
             }
         }
+        else {
+            console.log("DB Password and received Password is not the same ! ")
+            let response = {}
+            response.wrongOldPassword = true
+            response.msg = "DB Password and received Password is not the same ! "
+            res.status(200).send(response)
+        }
 
-
-        res.status(200).send(false)
     }
 })
 
