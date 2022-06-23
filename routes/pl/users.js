@@ -112,6 +112,33 @@ router.delete('/delete/:id', (req, res) => {
 })
 
 // UPDATE USER 
+router.put('/updateMe/:id', async (req, res) => {
+    console.log("/updateMe/:id")
+    console.log(req.body)
+    console.log(req.params.id)
+    const { firstname, lastname, username } = req.body
+    const id = req.params.id
+    if (firstname !== '' || lastname !== '' || username !== 'null') {
+        console.log("bez hasła")
+        Users.update({
+            firstname: firstname,
+            lastname: lastname,
+            username: username
+        },
+            {
+                where: {
+                    id: id
+                }
+            }
+        )
+        res.status(200).send(true)
+    }
+    else{
+        res.status(200).send(false)
+    }
+})
+
+// UPDATE USER 
 router.put('/update/:id', async (req, res) => {
     console.log(req.body)
     console.log(req.params.id)
@@ -135,7 +162,10 @@ router.put('/update/:id', async (req, res) => {
         )
         res.status(200).send(true)
     }
-    else if (password !== '' || password !== null) {
+    else {
+
+    } 
+    if (password !== '' || password !== null) {
         console.log("Zmiana hasła")
         const hash = await bcrypt.hash(password, 10)
         Users.update({

@@ -6,7 +6,7 @@ function authenticate(req, res, next) {
     console.log(req.cookies)
     if (token == null)
         console.log("token null")
-    if (token == '')
+    else if (token == '')
         console.log("token ''")
     else {
         jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
