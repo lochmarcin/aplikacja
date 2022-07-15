@@ -292,10 +292,10 @@ router.get("/download/:id", async (req, res) => {
                 id: req.params.id
             }
         })
-            .then(todo => {
-                console.log(todo.url)
-                const file = `${path}/uploads/${todo.url}`;
-                res.status(200).download(file)
+            .then(file => {
+                console.log(file.url)
+                const download_file = `${path}/uploads/${file.url}`;
+                res.status(200).download(download_file)
             })
             .catch(err => {
                 console.log('Error: ' + err)

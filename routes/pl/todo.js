@@ -114,7 +114,7 @@ router.put("/updateDone/:id", async (req, res) => {
         })
         .then(todos => {
             console.log(todos[0])
-            res.status(200).send((todos[0] = 1) ? "looks good" : "sometching is wrong")
+            res.status(200).send((todos[0] >= 1) ? {TodoToDone: true} : {TodoToDone: false})
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -185,7 +185,7 @@ router.post("/addNew", (req, res) => {
     console.log("----------------------------")
     console.log(req.body)
 
-    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year, internal_id, deposit, time_morning } = req.body
+    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year, internal_id, deposit, time_morning, fv } = req.body
     let done = false
     let condition = "Nowe / używane"
 
@@ -202,7 +202,7 @@ router.post("/addNew", (req, res) => {
     console.log("Collect_date: " + collect_date)
 
     Todo.create({
-        users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, done, internal_id, deposit, time_morning
+        users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, done, internal_id, deposit, time_morning, fv
     })
         .then(todo => {
             let notifi = {
@@ -231,7 +231,7 @@ router.post("/add", async (req, res) => {
 
 
 
-    let { company, part, indexx, quantity, price, band_number, note, collect_date, condition, internal_id, deposit, time_morning } = req.body
+    let { company, part, indexx, quantity, price, band_number, note, collect_date, condition, internal_id, deposit, time_morning, fv } = req.body
     let done = false
 
     try {
@@ -245,7 +245,7 @@ router.post("/add", async (req, res) => {
         console.log("Kto dodał: " + whoAdd)
 
         const result = await Todo.create({
-            company, collect_date, part, indexx, quantity, price, band_number, note, condition, done, whoAdd, internal_id, deposit, time_morning
+            company, collect_date, part, indexx, quantity, price, band_number, note, condition, done, whoAdd, internal_id, deposit, time_morning, fv
         })
         console.log(result.dataValues)
         res.status(200).json(result.dataValues)
@@ -269,7 +269,7 @@ router.post("/addReg", (req, res) => {
     console.log("----------------------------")
     console.log(req.body)
 
-    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year, internal_id, deposit, time_morning } = req.body
+    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year, internal_id, deposit, time_morning, fv } = req.body
     let done = false
     let condition = "Regenerowane"
 
@@ -285,7 +285,7 @@ router.post("/addReg", (req, res) => {
     let collect_date = `${year}-${month}-${day}`
     console.log("Collect_date: " + collect_date)
     Todo.create({
-        users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, done, internal_id, deposit, time_morning
+        users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, done, internal_id, deposit, time_morning, fv
     })
         .then(todo => {
             let notifi = {
@@ -340,7 +340,7 @@ router.put("/updateWeb/:id", async (req, res) => {
     console.log('Param: ' + param)
     let notification = false
 
-    let { users, company, part, indexx, quantity, price, band_number, note, collect_date, condition, internal_id, deposit, time_morning } = req.body
+    let { users, company, part, indexx, quantity, price, band_number, note, collect_date, condition, internal_id, deposit, time_morning, fv } = req.body
 
     console.log("Collect_date: " + collect_date)
 
@@ -355,7 +355,7 @@ router.put("/updateWeb/:id", async (req, res) => {
         })
 
 
-    await Todo.update({ users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, internal_id, deposit, time_morning },
+    await Todo.update({ users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, internal_id, deposit, time_morning, fv },
         {
             where: {
                 id: param
@@ -388,7 +388,7 @@ router.put("/update/:id", async (req, res) => {
 
 
 
-    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year, internal_id, deposit, time_morning } = req.body
+    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year, internal_id, deposit, time_morning, fv } = req.body
 
     let check_day_length = day.toString().length
     let check_month_length = month.toString().length
@@ -414,7 +414,7 @@ router.put("/update/:id", async (req, res) => {
         })
 
 
-    await Todo.update({ users, company, collect_date, part, indexx, quantity, price, band_number, note, internal_id, deposit, time_morning },
+    await Todo.update({ users, company, collect_date, part, indexx, quantity, price, band_number, note, internal_id, deposit, time_morning, fv },
         {
             where: {
                 id: param

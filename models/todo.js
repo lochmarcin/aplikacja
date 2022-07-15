@@ -55,6 +55,9 @@ const Todo = db.define('todo', {
     },
     internal_id: {
         type: Sequelize.STRING
+    },
+    fv: {
+        type: Sequelize.BOOLEAN
     }
 })
 
