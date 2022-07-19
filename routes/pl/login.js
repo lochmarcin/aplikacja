@@ -153,8 +153,8 @@ router.post('/login', async (req, res, next) => {
             maxAge: 86400000,
             httpOnly: true,
 // ZMIEŃ na lokalu secure: false,
-            secure: false,
-            sameSite: 'None'
+            // secure: false,
+            // sameSite: 'None'
         })
 
         console.log("Wysłałem tokena: " + accessToken)
