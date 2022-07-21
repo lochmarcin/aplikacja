@@ -152,9 +152,9 @@ router.post('/login', async (req, res, next) => {
         res.cookie('JWT', accessToken, {
             maxAge: 86400000,
             httpOnly: true,
-// ZMIEŃ na lokalu secure: false,
-            // secure: false,
-            // sameSite: 'None'
+// ZMIEŃ na lokalu secure: true; sameSite: 'None',
+            secure: true,
+            sameSite: 'None'
         })
 
         console.log("Wysłałem tokena: " + accessToken)

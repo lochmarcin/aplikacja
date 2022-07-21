@@ -17,6 +17,8 @@ select * from todo
 
 
 cp -R /home/ubuntu/front/front_motopres/build/* /var/www/motopres
+fuser -k 5000/tcp
+
 
 
 Szukajka: co zrobił 
