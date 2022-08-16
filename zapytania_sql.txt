@@ -25,24 +25,27 @@ rm -r motopres/*
 Szukajka: co zrobił 
 Rodzaj: zadania, użytkownicy
 
-Zadania
+Zadania:
 'użytkownik' dodał      zadanie o Id wew: 'id' dnia: 'data' -> szczegóły + link
 'użytkownik' edytował   zadanie o Id wew: 'id' dnia: 'data' -> szczegóły + link
 'użytkownik' usunął     zadanie o Id wew: 'id' dnia: 'data'
 'użytkownik' Wykonał    zadanie o Id wew: 'id' dnia: 'data'
 'użytkownik' przywrócił zadanie o Id wew: 'id' dnia: 'data'
 
-Użytkownicy
+Użytkownicy logowanie:
 'użytkownik' zalogował się: 'data', godz 'godzina' z ip: 'ip' 
+Nieudana próba logowania na 'użytkownika'
 
+Użytkownik edycja:
 'użytkownik' dodał  użytkownika  'imie' 'nazwisko' o nazwie użytkownika 'username', uprawnienia 'iseditor' 'isAdmin' dnia: 'data'
 'użytkownik' usunął użytkownika 'imie' 'nazwisko' o nazwie użytkownika 'username' dnia: 'data'
 'użytkownik' dodał  użytkownika  'imie' 'nazwisko' o nazwie użytkownika 'username', uprawnienia 'iseditor' 'isAdmin' dnia: 'data'
-
 'użytkownik' zmienił hasło dnia: 'data'
 'użytkownik' zmienił dane na 'imie', 'nazwisko', 'username' dnia: 'data'
 
-'rodzaj' - 'kto' - 'co zrobił' - 'komu/czemu' - 'data' - 'godzina'
+'rodzaj'        "INFORMACJA"    'kto'   'co zrobił'     'komu/czemu'    "SZCZEGÓŁY"     "LINK"  'data'  'godzina' 
+'type'          'info'          'who'   'did'           'whom'          'details'       'link'  'date'  'time'
+
 
 # API
 server {
