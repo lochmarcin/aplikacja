@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken')
 const authenticate = require('./../../services/authenticate')
 const Fcm = require('../../models/fcm')
 
-const LoginLogs = require('./../../services/logs')
+const {LoginLogs, WrongPasswordLoginLogs} = require('./../../services/logs')
 
 
 
@@ -168,10 +168,11 @@ router.post('/login', async (req, res, next) => {
             token: accessToken
         })
         console.log("Zalogowano!")
-        LoginLogs(username)
+        LoginLogs()
         // next()
     }
     else {
+        WrongPasswordLoginLogs(username)
         res.status(200).json({
             isEditor: null,
             token: null
