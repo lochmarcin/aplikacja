@@ -214,8 +214,9 @@ router.delete("/logout", async (req, res) => {
 
     res.cookie('JWT', "", {
         httpOnly: true,
-        secure: true,
-        sameSite: 'None'
+        //Odkomentuj poniższe dwie linijki na lokalu 
+        // secure: true,
+        // sameSite: 'None'
     });
     // res.clearCookie('JWT')
     // res.cookie('JWT', null)
