@@ -97,14 +97,14 @@ router.post("/addApk", upload.single('apk'), async (req, res) => {
 
         // console.log(req.file.originalname)
 
-        if (req.fileValidationError) {
-            console.log("Zły typ plików !")
-            res.status(200).send("Błąd, akceptowane formaty plików: apk, avi, png")
-        }
-        else if (req.file == null) {
-            console.log("Brak pliku lub req.file == null")
-            return null
-        }
+        // if (req.fileValidationError) {
+        //     console.log("Zły typ plików !")
+        //     res.status(200).send("Błąd, akceptowane formaty plików: apk, avi, png")
+        // }
+        // else if (req.file == null) {
+        //     console.log("Brak pliku lub req.file == null")
+        //     return null
+        // }
 
 
         // const formatedName = req.file.originalname.split(' ').join('_')
