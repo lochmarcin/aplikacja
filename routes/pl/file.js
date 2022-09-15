@@ -21,6 +21,7 @@ const storage = multer.diskStorage({
         cb(null, './uploads')
     },
     filename: function (req, file, cb) {
+        console.log("FILE ORGINAL NAME: " + file.originalname)
         const formatedName = file.originalname.split(' ').join('_')
         fileName = new Date().toISOString().replace(/:/gi, '-') + '_' + formatedName
         // cb(null, `${fileName}.apk`) - Dla produkcji - wymuszanie APK
@@ -34,8 +35,9 @@ const upload = multer({
     limits: { fileSize: maxSize },
     storage,
     fileFilter: function (req, file, cb) {
-        var filetypes = /apk|avi|png/;
-        var mimetype = filetypes.test(file.mimetype);
+        var filetypes = /png|avi|apk/;
+        // console.log(file)
+        var mimetype = filetypes.test(file.fieldname);
         // var extname = filetypes.test(path.extname(
         //     file.originalname).toLowerCase());
         console.log("mimetype: " + mimetype)
@@ -43,7 +45,7 @@ const upload = multer({
 
         if (mimetype == false) {
             // console.log("Błąd, akceptowane formaty plików: /apk|avi|png/")
-            // res.status(200).send("Błąd, akceptowane formaty plików: /apk|avi|png/")
+            res.status(200).send("Błąd, akceptowane formaty plików: /apk|avi|png/")
             console.log("Forbidden extension")
             req.fileValidationError = "Forbidden extension";
             return cb(null, false, req.fileValidationError);
@@ -243,8 +245,8 @@ router.put("/updateActualFile/:id", async (req, res) => {
                 }
             }
         )
-    console.log(result)
-    res.status(200).send(result)
+        console.log(result)
+        res.status(200).send(result)
     } catch (err) {
         console.log("Error on /updateActualFile/:id = " + err)
     }
@@ -260,7 +262,7 @@ router.get("/downloadMain", async (req, res) => {
         File.findOne({
             raw: true,
             where: {
-                actual:true
+                actual: true
             }
         })
             .then(todo => {
@@ -278,6 +280,35 @@ router.get("/downloadMain", async (req, res) => {
         console.log("Send file ERROR: " + err)
     }
 })
+
+// Delete file 
+router.delete("/deleteFile/:id", async (req, res) => {
+    console.log("DELETE FILE ")
+    console.log("Param: " + req.params.id)
+  
+    try {
+        const path = await dirname()
+
+        File.destroy({
+            where: {
+                id: req.params.id
+            }
+        })
+            .then(file => {
+                console.log("File Deleted ")
+                res.status(200).send("file deleted")
+            })
+            .catch(err => {
+                console.log('Error: ' + err)
+                res.sendStatus(400)
+            })
+
+        // Set disposition and send it.
+    } catch (err) {
+        console.log("Send file ERROR: " + err)
+    }
+})
+
 
 // DOWNLOAD file from web - sendApkFile
 router.get("/download/:id", async (req, res) => {
