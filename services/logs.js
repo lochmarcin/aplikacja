@@ -60,7 +60,42 @@ const WrongPasswordLoginLogs = (who) => {
         }
     }
 }
+class Log {
+
+    login(success = true || false, who) {
+        let date = GetDate()
+        let time = `${GetDate()} ${GetTime()}`
+
+        console.log(date)
+        console.log(time)
+
+        if (who) {
+            try {
+                console.log("Wysyłam: " + time)
+                Logs.create({ type: 'logowanie', who, success, did: success ? 'powiodło się ' : 'niepowiodło się: ', date, time, info: success ? null :'błędne hasło' })
+            } catch (error) {
+                console.log("Error at  WrongPasswordLoginLogs saving Loging logs: " + error)
+            }
+        }
+    }
+    register(success = true || false, who) {
+        let date = GetDate()
+        let time = `${GetDate()} ${GetTime()}`
+
+        console.log(date)
+        console.log(time)
+
+        if (who) {
+            try {
+                console.log("Wysyłam: " + time)
+                Logs.create({ type: 'logowanie', who, success, did: success ? 'powiodło się ' : 'niepowiodło się: ', date, time, info: success ? null :'błędne hasło' })
+            } catch (error) {
+                console.log("Error at  WrongPasswordLoginLogs saving Loging logs: " + error)
+            }
+        }
+    }
 
 
 
-module.exports = { LoginLogs, WrongPasswordLoginLogs }
+}
+module.exports = Log

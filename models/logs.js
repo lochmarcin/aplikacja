@@ -14,6 +14,9 @@ const Logs = db.define('logs', {
     whom: {
         type: Sequelize.STRING
     },
+    success: {
+        type: Sequelize.BOOLEAN
+    },
     did: {
         type: Sequelize.STRING
     },

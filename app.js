@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const axios = require('axios')
 const path = require('path');
+const Log = require('./services/logs')
 
 
 require('dotenv').config({ path: '.env' })
@@ -71,4 +72,6 @@ app.use('/', routes)
 
 app.listen(port, () => {
     console.log("serwer działa na porcie " + port)
+    const log = new Log
+    log.login(true,"marcin")
 })
