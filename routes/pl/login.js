@@ -8,8 +8,8 @@ const jwt = require('jsonwebtoken')
 const authenticate = require('./../../services/authenticate')
 const Fcm = require('../../models/fcm')
 
-const {LoginLogs, WrongPasswordLoginLogs} = require('./../../services/logs')
-
+const Log = require('../../services/logs')
+const log = new Log
 
 
 
@@ -24,31 +24,37 @@ router.use(express.urlencoded({ extended: true }))
 // })
 
 
-router.get("/me", async (req, res) => {
-    authenticate(req, res)
-    if (req.user == null) {
+router.get("/data", authenticate, async (req, res) => {
+    // authenticate(req, res),
+    console.log(req.user)
+    res.status(200).send("chuj")
+})
+
+router.get("/me", authenticate, async (req, res) => {
+
+    if (req.user == null || req.user == undefined) {
         console.log("Brak zalogowanego uzytkownika")
-        res.status(200).send({
+        res.status(401).send({
             logged: false,
-            msg: "No Auth Cookie :("
+            message: "Unauthorized"
         })
     }
     else {
-        console.log("req.user.username: " , req.user.username)
+        console.log("req.user.username: ", req.user)
         let user = req.user
         user.logged = true
         res.status(200).send(user)
 
         // res.status(200).send(req.user)
     }
-
 })
 
 
 
-router.post("/register", async (req, res) => {
+router.post("/register", authenticate, async (req, res) => {
     const { firstname, lastname, username, password, isEditor, isAdmin } = req.body
     console.log(req.body)
+
 
     const hash = await bcrypt.hash(password, 10)
     try {
@@ -71,6 +77,10 @@ router.post("/register", async (req, res) => {
             console.log("Dodano użytkonik")
             console.log(user.dataValues)
             res.status(200).send(user.dataValues)
+
+
+            log.register(created, req.user.username, username, username, isEditor, isAdmin, firstname, lastname)
+
             return
         }
         else {
@@ -114,6 +124,7 @@ router.post('/login', async (req, res, next) => {
             console.log(dbPassword)
         }
     } catch (e) {
+        log.login(false, username)
         console.log("Login Error" + e)
         res.sendStatus(200)
         return 0
@@ -154,13 +165,16 @@ router.post('/login', async (req, res, next) => {
         res.cookie('JWT', accessToken, {
             maxAge: 86400000,
             httpOnly: true,
-// ZMIEŃ na lokalu secure: true; sameSite: 'None',
+            // ZMIEŃ na lokalu secure: true; sameSite: 'None',
             secure: true,
             sameSite: 'None'
         })
 
         console.log("Wysłałem tokena: " + accessToken)
         // res.setHeader('Acces-Control-Allow-Origin','*')
+
+        log.login(true, result.username)
+
         res.status(200).json({
             firstname: result.dataValues.firstname,
             isAdmin: result.dataValues.isAdmin,
@@ -168,11 +182,10 @@ router.post('/login', async (req, res, next) => {
             token: accessToken
         })
         console.log("Zalogowano!")
-        LoginLogs()
         // next()
     }
     else {
-        WrongPasswordLoginLogs(username)
+
         res.status(200).json({
             isEditor: null,
             token: null
@@ -210,7 +223,7 @@ router.post('/refresh', (req, res) => {
     res.send({ accessToken })
 })
 
-router.delete("/logout", async (req, res) => {
+router.delete("/logout", authenticate, async (req, res) => {
 
     res.cookie('JWT', "", {
         httpOnly: true,
@@ -218,16 +231,22 @@ router.delete("/logout", async (req, res) => {
         secure: true,
         sameSite: 'None'
     });
-    // res.clearCookie('JWT')
-    // res.cookie('JWT', null)
+    res.clearCookie('JWT')
+    res.cookie('JWT', null)
     console.log("WYLOGOWANIE !!!")
     console.log("logout: ", req.cookies)
     console.log("req.user:", req.user)
+
+
+    log.logout(true, req.user.username)
+
     res.status(200).json({
         logged: false,
         message: "Logged out successfully"
     })
+
+
 })
- 
+
 
 module.exports = router

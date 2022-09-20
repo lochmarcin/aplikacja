@@ -72,6 +72,6 @@ app.use('/', routes)
 
 app.listen(port, () => {
     console.log("serwer działa na porcie " + port)
-    const log = new Log
-    log.login(true,"marcin")
+    // const log = new Log
+    // log.login(true,"marcin")
 })
