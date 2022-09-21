@@ -15,6 +15,9 @@ const Fcm = require('../../models/fcm')
 
 const authenticate = require('./../../services/authenticate')
 
+const Log = require('../../services/logs')
+const log = new Log
+
 
 // const fcms = require('../../services/arrayOfFcm')
 // var admin = require("firebase-admin");
@@ -24,8 +27,7 @@ const authenticate = require('./../../services/authenticate')
 
 
 // GET ALL TODOS WITCH DONE IS FALSE ---------- GET ALL TODOS ---------- GET ALL TODOS 
-router.get('/get', (req, res) => {
-    authenticate(req, res)
+router.get('/get', authenticate, (req, res) => {
 
     console.log("get all todos")
     Todo.findAll({
@@ -114,28 +116,20 @@ router.put("/updateDone/:id", async (req, res) => {
         })
         .then(todos => {
             console.log(todos[0])
-            res.status(200).send((todos[0] >= 1) ? {TodoToDone: true} : {TodoToDone: false})
+            res.status(200).send((todos[0] >= 1) ? { TodoToDone: true } : { TodoToDone: false })
+
+            log.doneTodo(true, req.user.username, req.params.id)
         })
         .catch(err => {
             console.log('Error: ' + err)
-            res.sendStatus(400)
+            res.status(200).send("ERROR")
+            log.doneTodo(false, req.user.username, req.params.id)
         })
 })
 
 // Aktualizacja jednego todo po id NA DONE FALSE
-router.put("/updateNotDone/:id", async (req, res) => {
+router.put("/updateNotDone/:id", authenticate, async (req, res) => {
     console.log("Param: " + req.params.id)
-    authenticate(req, res)
-
-    // console.log("User:")
-    // console.log(req.user.user_id)
-
-    // const resultWhoDone = await Todo.findOne({
-    //     where: {
-    //         id: req.params.id
-    //     }
-    // })
-    // let whoDone = resultWhoDone.dataValues.whoDone
 
     const resultWhoLogin = await User.findOne({
         where: {
@@ -145,7 +139,7 @@ router.put("/updateNotDone/:id", async (req, res) => {
     })
     let whologged = `${resultWhoLogin.dataValues.firstname} ${resultWhoLogin.dataValues.lastname}`
 
-    // console.log("kto dodał" + whoDone)
+
     console.log("kto UPDATE: " + whologged)
 
     // if (whoDone === whologged) {
@@ -211,8 +205,10 @@ router.post("/addNew", (req, res) => {
             }
             firebaseNotifi(notifi)
 
-            console.log("Powinoo wysłać")
             res.sendStatus(200)
+            // console.log("Powinoo wysłać")
+
+            log.addTodo(true, req.user.username, condition, company, part, indexx, quantity, price, band_number, note, collect_date, internal_id, deposit, time_morning, fv, todo.dataValues.id)
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -222,10 +218,9 @@ router.post("/addNew", (req, res) => {
 
 
 // Dodawanie przez przeglądarkę ------------------------------------------------
-router.post("/add", async (req, res) => {
+router.post("/add", authenticate, async (req, res) => {
     console.log("add todo:")
     console.log("----------------------------")
-    authenticate(req, res)
     console.log("req.user: " + req.user.username)
     console.log(req.body)
 
@@ -256,6 +251,9 @@ router.post("/add", async (req, res) => {
             'body': `${part} - Data odbioru: ${collect_date}`
         }
         firebaseNotifi(notifi)
+
+        log.addTodo(true, req.user.username, condition, company, part, indexx, quantity, price, band_number, note, collect_date, internal_id, deposit, time_morning, fv, result.dataValues.id)
+
     } catch (err) {
         console.log("Error: " + err)
     }
@@ -295,6 +293,8 @@ router.post("/addReg", (req, res) => {
             firebaseNotifi(notifi)
             console.log("Powinoo wysłać")
             res.sendStatus(200)
+
+            log.addTodo(true, req.user.username, condition, company, part, indexx, quantity, price, band_number, note, collect_date, internal_id, deposit, time_morning, fv, todo.dataValues.id)
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -334,7 +334,7 @@ router.get('/getOne/:id', (req, res) => {
 
 
 // Aktualizacja jednego todo po id WEB
-router.put("/updateWeb/:id", async (req, res) => {
+router.put("/updateWeb/:id", authenticate, async (req, res) => {
     console.log(req.body)
     const param = req.params.id
     console.log('Param: ' + param)
@@ -342,9 +342,10 @@ router.put("/updateWeb/:id", async (req, res) => {
 
     let { users, company, part, indexx, quantity, price, band_number, note, collect_date, condition, internal_id, deposit, time_morning, fv } = req.body
 
+
     console.log("Collect_date: " + collect_date)
 
-    await Todo.findOne({
+    Todo.findOne({
         raw: true,
         where: {
             id: param
@@ -352,30 +353,40 @@ router.put("/updateWeb/:id", async (req, res) => {
     })
         .then(todo => {
             collect_date != todo.collect_date ? notification = !notification : false
+
+
+            Todo.update({ users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, internal_id, deposit, time_morning, fv },
+                {
+                    where: {
+                        id: param
+                    }
+                })
+                .then(update => {
+                    console.log(notification)
+                    if (notification) {
+                        let notifi = {
+                            'title': "Zmieniono datę w zadaniu ",
+                            'body': `${part} - Nowa data odbioru: ${collect_date}`
+                        }
+                        firebaseNotifi(notifi)
+                    }
+                    res.status(200).send((update[0] = 1) ? true : false)
+
+                    console.log(update[0])
+                    log.updateTodo(true, req.user.username, todo, req.body)
+
+                })
+                .catch(err => {
+                    console.log('Error: ' + err)
+                    // res.status(400).send(false)
+                })
+
+
+
         })
 
 
-    await Todo.update({ users, company, collect_date, part, indexx, quantity, price, band_number, note, condition, internal_id, deposit, time_morning, fv },
-        {
-            where: {
-                id: param
-            }
-        })
-        .then(todos => {
-            console.log(notification)
-            if (notification) {
-                let notifi = {
-                    'title': "Zmieniono datę w zadaniu ",
-                    'body': `${part} - Nowa data odbioru: ${collect_date}`
-                }
-                firebaseNotifi(notifi)
-            }
-            res.status(200).send((todos[0] = 1) ? true : false)
-        })
-        .catch(err => {
-            console.log('Error: ' + err)
-            res.status(400).send(false)
-        })
+
 
 })
 

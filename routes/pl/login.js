@@ -124,7 +124,9 @@ router.post('/login', async (req, res, next) => {
             console.log(dbPassword)
         }
     } catch (e) {
-        log.login(false, username)
+        
+        
+
         console.log("Login Error" + e)
         res.sendStatus(200)
         return 0
@@ -186,6 +188,8 @@ router.post('/login', async (req, res, next) => {
     }
     else {
 
+        log.login(false, username)
+        
         res.status(200).json({
             isEditor: null,
             token: null

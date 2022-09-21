@@ -25,8 +25,8 @@ router.get('/get', (req, res) => {
 })
 
 // Pobieranie imienia nazwiska zalogowanego użytkownika i roli 
-router.get('/me', (req, res) => {
-    authenticate(req, res)
+router.get('/me', authenticate, (req, res) => {
+
     console.log("req.user: " + req.user.user_id)
 
     Users.findOne({
