@@ -58,6 +58,9 @@ const Todo = db.define('todo', {
     },
     fv: {
         type: Sequelize.BOOLEAN
+    },
+    active: {
+        type: Sequelize.BOOLEAN
     }
 })
 

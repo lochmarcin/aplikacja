@@ -5,14 +5,20 @@ const bcrypt = require('bcryptjs')
 const authenticate = require('./../../services/authenticate')
 const Users = require('../../models/users')
 
+const Log = require('../../services/logs')
+const User = require('../../models/users')
+const log = new Log
 
 
-router.get('/get', (req, res) => {
+router.get('/get', authenticate, (req, res) => {
     console.log('pobieranie użytkowników')
 
     Users.findAll({
         raw: true,
-        attributes: ['id', 'firstname', 'lastname', 'username', 'isViewer', 'isEditor', 'createdAt', 'isAdmin']
+        attributes: ['id', 'firstname', 'lastname', 'username', 'isViewer', 'isEditor', 'createdAt', 'isAdmin'],
+        where: {
+            active: true
+        }
     })
         .then(user => {
             console.log(user)
@@ -49,7 +55,7 @@ router.get('/me', authenticate, (req, res) => {
 })
 
 // Pobieranie imienia nazwiska uzytkownika
-router.get('/me/:id', (req, res) => {
+router.get('/me/:id', authenticate, (req, res) => {
     console.log("Param: " + req.params.id)
 
 
@@ -93,17 +99,32 @@ router.get('/getOne/:id', (req, res) => {
 })
 
 // DELETE USER 
-router.delete('/delete/:id', (req, res) => {
+router.delete('/delete/:id', authenticate, (req, res) => {
     console.log("id usera do usunięcia : " + req.params.id)
 
-    Users.destroy({
-        where: {
-            id: req.params.id
-        }
-    })
+    Users.update({
+        active: false
+    },
+        {
+            where: {
+                id: req.params.id
+            }
+        })
         .then(user => {
-            console.log(user)
+
             res.status(200).send("Usunięto użytkownika o id uzytkownika: " + req.params.id)
+
+            Users.findOne({
+                raw: true,
+                attributes: ['firstname', 'lastname', 'username', 'isEditor', 'isAdmin'],
+                where: {
+                    id: req.params.id
+                }
+            }).then(deleteduser => {
+                log.deleteUser(true, req.user.username, deleteduser.username, `${deleteduser.firstname} ${deleteduser.lastname}`, req.params.id)
+            }).catch(err => {
+                console.log('Error: ' + err)
+            })
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -112,7 +133,7 @@ router.delete('/delete/:id', (req, res) => {
 })
 
 // UPDATE USER 
-router.put('/updateMe/:id', async (req, res) => {
+router.put('/updateMe/:id', authenticate, async (req, res) => {
     console.log("/updateMe/:id")
     console.log(req.body)
     console.log(req.params.id)
@@ -120,77 +141,107 @@ router.put('/updateMe/:id', async (req, res) => {
     const id = req.params.id
     if (firstname !== '' || lastname !== '' || username !== 'null') {
         console.log("bez hasła")
-        Users.update({
-            firstname: firstname,
-            lastname: lastname,
-            username: username
-        },
-            {
-                where: {
-                    id: id
-                }
+
+        Users.findOne({
+            where: {
+                id: id
             }
-        )
-        res.status(200).send(true)
+        }).then(oldMe => {
+
+            Users.update({
+                firstname: firstname,
+                lastname: lastname,
+                username: username
+            },
+                {
+                    where: {
+                        id: id
+                    }
+                }
+            ).then(newMe => {
+                res.status(200).send(true)
+                log.editMe(true, req.user.username, req.user.username, req.params.id, oldMe, req.body)
+            })
+
+        })
+
     }
-    else{
+    else {
         res.status(200).send(false)
     }
 })
 
 // UPDATE USER 
-router.put('/update/:id', async (req, res) => {
+router.put('/update/:id', authenticate, async (req, res) => {
     console.log(req.body)
     console.log(req.params.id)
     const { firstname, lastname, username, password, isEditor, isAdmin } = req.body
     console.log("password: " + password)
     const id = req.params.id
-    if (password === '' || password === undefined || password === null) {
-        console.log("bez hasła")
-        Users.update({
-            firstname: firstname,
-            lastname: lastname,
-            username: username,
-            isEditor: isEditor,
-            isAdmin: isAdmin
-        },
-            {
-                where: {
-                    id: id
-                }
-            }
-        )
-        res.status(200).send(true)
-    }
-    else {
+    let hash = null
+    if (password !== '' || password !== null)
+        hash = bcrypt.hash(password, 10)
 
-    } 
-    if (password !== '' || password !== null) {
-        console.log("Zmiana hasła")
-        const hash = await bcrypt.hash(password, 10)
-        Users.update({
-            firstname: firstname,
-            lastname: lastname,
-            username: username,
-            isEditor: isEditor,
-            isAdmin: isAdmin,
-            password: hash
-        },
-            {
-                where: {
-                    id: id
+    User.findOne({
+        raw: true,
+        where: {
+            id: id
+        }
+
+    }).then(oldUser => {
+
+        if (password === '' || password === undefined || password === null) {
+            console.log("bez hasła")
+            Users.update({
+                firstname: firstname,
+                lastname: lastname,
+                username: username,
+                isEditor: isEditor,
+                isAdmin: isAdmin
+            },
+                {
+                    where: {
+                        id: id
+                    }
                 }
-            }
-        )
-        res.status(200).send(true)
-    }
-    else {
-        res.status(200).send(false)
-    }
+            )
+            res.status(200).send(true)
+            log.editUser(true, req.user.username, oldUser.username, id, oldUser, req.body, false)
+        }
+        else {
+
+        }
+        if (password !== '' || password !== null) {
+            console.log("Zmiana hasła")
+
+            Users.update({
+                firstname: firstname,
+                lastname: lastname,
+                username: username,
+                isEditor: isEditor,
+                isAdmin: isAdmin,
+                password: hash
+            },
+                {
+                    where: {
+                        id: id
+                    }
+                }
+            )
+            res.status(200).send(true)
+            log.editUser(true, req.user.username, oldUser.username, id, oldUser, req.body, true)
+
+        }
+        else {
+            res.status(200).send(false)
+        }
+    })
+
+
 })
 
 // Change Password 
-router.put('/changePassword/:id', async (req, res) => {
+router.put('/changePassword/:id', authenticate, async (req, res) => {
     console.log(req.body)
     console.log(req.params.id)
     const { oldPassword, firstNewPass, secondNewPass } = req.body
@@ -260,6 +311,8 @@ router.put('/changePassword/:id', async (req, res) => {
                 response.msg = "Hasło zostało zmienione"
                 res.status(200).send(response)
 
+                log.changePassword(true, req.user.username, req.user.username, id)
+
             } catch (error) {
                 console.log("Error at change pass to db: " + error)
             }
@@ -270,6 +323,7 @@ router.put('/changePassword/:id', async (req, res) => {
             response.wrongOldPassword = true
             response.msg = "DB Password and received Password is not the same ! "
             res.status(200).send(response)
+            log.changePassword(false, req.user.username, req.user.username, id)
         }
 
     }

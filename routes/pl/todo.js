@@ -89,9 +89,8 @@ router.post('/notification', async (req, res) => {
 })
 
 // Aktualizacja jednego todo po id NA DONE TRUE
-router.put("/updateDone/:id", async (req, res) => {
+router.put("/updateDone/:id", authenticate, async (req, res) => {
     console.log("Param: " + req.params.id)
-    authenticate(req, res)
 
     const result = await User.findAll({
         where: {
@@ -118,7 +117,7 @@ router.put("/updateDone/:id", async (req, res) => {
             console.log(todos[0])
             res.status(200).send((todos[0] >= 1) ? { TodoToDone: true } : { TodoToDone: false })
 
-            log.doneTodo(true, req.user.username, req.params.id)
+            log.doneTodo((todos[0] = 1) ? true : false, req.user.username, req.params.id)
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -158,6 +157,7 @@ router.put("/updateNotDone/:id", authenticate, async (req, res) => {
         .then(todos => {
             // console.log(todos[0])
             res.status(200).send((todos[0] = 1) ? "looks good" : "sometching is wrong")
+            log.restoreTodo((todos[0] = 1) ? true : false, req.user.username, req.params.id)
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -373,7 +373,7 @@ router.put("/updateWeb/:id", authenticate, async (req, res) => {
                     res.status(200).send((update[0] = 1) ? true : false)
 
                     console.log(update[0])
-                    log.updateTodo(true, req.user.username, todo, req.body)
+                    log.updateTodo(true, req.user.username, todo, req.body, param)
 
                 })
                 .catch(err => {
@@ -451,7 +451,7 @@ router.put("/update/:id", async (req, res) => {
 })
 
 // Usuwanie konkretnego ToDo po id
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:id", authenticate, async (req, res) => {
     const param = req.params.id
     console.log(param)
 
@@ -464,12 +464,14 @@ router.delete("/delete/:id", async (req, res) => {
             res.status(200).send({
                 deleted: true
             })
+            log.deleteTodo(true, req.user.username, param)
         })
         .catch(err => {
             console.log('Error: ' + err)
             res.status(200).send({
                 deleted: false
             })
+            log.deleteTodo(false, req.user.username, param)
         })
 })
 

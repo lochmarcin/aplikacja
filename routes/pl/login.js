@@ -69,7 +69,8 @@ router.post("/register", authenticate, async (req, res) => {
                 username: username,
                 password: hash,
                 isEditor: isEditor,
-                isAdmin: isAdmin
+                isAdmin: isAdmin,
+                active: true
             }
         })
 

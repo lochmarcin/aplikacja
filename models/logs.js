@@ -26,6 +26,9 @@ const Logs = db.define('logs', {
     link: {
         type: Sequelize.STRING
     },
+    todoId: {
+        type: Sequelize.INTEGER
+    },
     date: {
         type: Sequelize.DATE
     },
