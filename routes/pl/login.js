@@ -32,6 +32,7 @@ router.get("/data", authenticate, async (req, res) => {
 
 router.get("/me", authenticate, async (req, res) => {
 
+     
     if (req.user == null || req.user == undefined) {
         console.log("Brak zalogowanego uzytkownika")
         res.status(401).send({
