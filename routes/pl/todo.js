@@ -117,7 +117,15 @@ router.put("/updateDone/:id", authenticate, async (req, res) => {
             console.log(todos[0])
             res.status(200).send((todos[0] >= 1) ? { TodoToDone: true } : { TodoToDone: false })
 
-            log.doneTodo((todos[0] = 1) ? true : false, req.user.username, req.params.id)
+            Todo.findOne({
+                where: {
+                    id: req.params.id
+                }
+            }).then(doneTodo => {
+
+                log.doneTodo((todos[0] = 1) ? true : false, req.user.username, req.params.id, doneTodo.internal_id)
+            })
+
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -157,7 +165,16 @@ router.put("/updateNotDone/:id", authenticate, async (req, res) => {
         .then(todos => {
             // console.log(todos[0])
             res.status(200).send((todos[0] = 1) ? "looks good" : "sometching is wrong")
-            log.restoreTodo((todos[0] = 1) ? true : false, req.user.username, req.params.id)
+
+            Todo.findOne({
+                where: {
+                    id: req.params.id
+                }
+            }).then(notDoneTodo => {
+
+                log.restoreTodo((todos[0] = 1) ? true : false, req.user.username, req.params.id, notDoneTodo.internal_id)
+            })
+
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -451,27 +468,29 @@ router.put("/update/:id", async (req, res) => {
 })
 
 // Usuwanie konkretnego ToDo po id
-router.delete("/delete/:id", authenticate, async (req, res) => {
+router.put("/delete/:id", authenticate, async (req, res) => {
+
     const param = req.params.id
     console.log(param)
 
-    await Todo.destroy({
-        where: {
-            id: param
-        }
-    })
+    await Todo.update({ active: false },
+        {
+            where: {
+                id: param
+            }
+        })
         .then(todos => {
             res.status(200).send({
                 deleted: true
             })
-            log.deleteTodo(true, req.user.username, param)
+            log.deleteTodo(true, req.user.username, param, req.body.internal_id)
         })
         .catch(err => {
             console.log('Error: ' + err)
             res.status(200).send({
                 deleted: false
             })
-            log.deleteTodo(false, req.user.username, param)
+            log.deleteTodo(false, req.user.username, param, req.body.internal_id)
         })
 })
 

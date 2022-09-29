@@ -41,6 +41,9 @@ const Logs = db.define('logs', {
     createdAt: {
         type: Sequelize.DATE
     },
+    todo_internal_id: {
+        type: Sequelize.STRING
+    }
 })
 
 module.exports = Logs

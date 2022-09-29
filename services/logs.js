@@ -121,18 +121,18 @@ class Log {
 
     }
 
-    doneTodo(success = true || false, who, id) {
+    doneTodo(success = true || false, who, id, internal_id) {
         let date = GetDate()
         let time = `${GetDate()} ${GetTime()}`
 
         if (who) {
             try {
                 console.log("Create doneTodo log ...")
-                let info = success ? `Użytkownik ${who} wykonał zadanie o id: ${id}` : `Błąd przy wykonaniu zadania. Użytkownik ${who}, zadanie o id: ${id}`
+                let info = success ? `Użytkownik ${who} wykonał zadanie o id: ${internal_id}` : `Błąd przy wykonaniu zadania. Użytkownik ${who}, zadanie o id: ${internal_id}`
 
-                let details = ``
+                let details = success ? `Użytkownik ${who} wykonał zadanie o id bazy: ${id}` : `Błąd przy wykonaniu zadania. Użytkownik ${who}, zadanie o id bazy: ${id}`
 
-                Logs.create({ type: success ? 'todo' : 'error', who, success, did: success ? 'wykonał zadanie' : `Błąd przy wykonaniu zadania`, date, time, info, details, link: `OneTodoDetails?id=${id}`, todoId: id })
+                Logs.create({ type: success ? 'todo' : 'error', who, success, did: success ? 'wykonał zadanie' : `Błąd przy wykonaniu zadania`, date, time, info, details, link: `OneTodoDetails?id=${id}`, todoId: id, todo_internal_id: internal_id })
 
             } catch (error) {
                 console.log("Error at 'doneTodo' - LOG saving logs: " + error)
@@ -141,18 +141,18 @@ class Log {
 
     }
 
-    restoreTodo(success = true || false, who, id) {
+    restoreTodo(success = true || false, who, id, internal_id) {
         let date = GetDate()
         let time = `${GetDate()} ${GetTime()}`
 
         if (who) {
             try {
                 console.log("Create doneTodo log ...")
-                let info = success ? `Użytkownik ${who} przywrócił zadanie o id: ${id}` : `Błąd przy przywróceniu zadania. Użytkownik ${who}, zadanie o id: ${id}`
+                let info = success ? `Użytkownik ${who} przywrócił zadanie o id: ${internal_id}` : `Błąd przy przywróceniu zadania. Użytkownik ${who}, zadanie o id: ${internal_id}`
 
-                let details = ``
+                let details = success ? `Użytkownik ${who} przywrócił zadanie o id bazy : ${id}` : `Błąd przy przywróceniu zadania. Użytkownik ${who}, zadanie o id bazy: ${id}`
 
-                Logs.create({ type: success ? 'todo' : 'error', who, success, did: success ? 'przywrócił zadanie' : `Błąd przy przywracaniu zadania`, date, time, info, details, link: `OneTodoDetails?id=${id}`, todoId: id })
+                Logs.create({ type: success ? 'todo' : 'error', who, success, did: success ? 'przywrócił zadanie' : `Błąd przy przywracaniu zadania`, date, time, info, details, link: `OneTodoDetails?id=${id}`, todoId: id, todo_internal_id: internal_id })
 
             } catch (error) {
                 console.log("Error at 'restoreTodo' - LOG saving logs: " + error)
@@ -161,18 +161,18 @@ class Log {
 
     }
 
-    deleteTodo(success = true || false, who, id) {
+    deleteTodo(success = true || false, who, id, internal_id) {
         let date = GetDate()
         let time = `${GetDate()} ${GetTime()}`
 
         if (who) {
             try {
                 console.log("Create deleteTodo log ...")
-                let info = success ? `Użytkownik ${who} usunął zadanie o id: ${id}` : `Błąd przy usuwaniu zadania. Użytkownik ${who}, zadanie o id: ${id}`
+                let info = success ? `Użytkownik ${who} usunął zadanie o id: ${internal_id}` : `Błąd przy usuwaniu zadania. Użytkownik ${who}, zadanie o id: ${internal_id}`
 
-                let details = ``
+                let details = success ? `Użytkownik ${who} usunął zadanie o id bazy: ${id}, id wew: ${internal_id}` : `Błąd przy usuwaniu zadania. Użytkownik ${who}, zadanie o id bazy: ${id}, id wew: ${internal_id}`
 
-                Logs.create({ type: success ? 'todo' : 'error', who, success, did: success ? 'usunął zadanie' : `Błąd przy usuwaniu zadania`, date, time, info, details, link: `OneTodoDetails?id=${id}`, todoId: id })
+                Logs.create({ type: success ? 'todo' : 'error', who, success, did: success ? 'usunął zadanie' : `Błąd przy usuwaniu zadania`, date, time, info, details, link: `OneTodoDetails?id=${id}`, todoId: id, todo_internal_id: internal_id })
 
             } catch (error) {
                 console.log("Error at 'deleteTodo' - LOG saving logs: " + error)
