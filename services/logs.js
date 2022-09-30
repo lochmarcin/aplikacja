@@ -11,14 +11,6 @@ GetTime = () => {
     return moment().format('HH:mm:ss')
 }
 
-
-const type = {
-    logowanie: 'logowanie',
-    zadania: 'zadania',
-    uzytkownik: 'uzytkownik',
-    error: 'błąd'
-}
-
 class Log {
 
     // LOGIN  ---  LOGIN  ---  LOGIN  ---  LOGIN  ---  LOGIN  ---  LOGIN  ---  LOGIN  ---  LOGIN  ---  LOGIN
@@ -90,7 +82,7 @@ class Log {
 
                 let details = `condition: ${condition}, company: ${company}, part: ${part}, indexx: ${indexx}, quantity: ${quantity}, price: ${price}, band_number: ${band_number}, note: ${note}, collect_date: ${collect_date}, internal_id: ${internal_id}, deposit: ${deposit}, time_morning: ${time_morning}, fv: ${fv}`
 
-                Logs.create({ type: 'todo', who, success, did: success ? 'dodano zadanie' : "nie dodano zadania", date, time, info, details, link: `OneTodoDetails?id=${id}`, todoId: id })
+                Logs.create({ type: 'todo', who, success, did: success ? 'dodano zadanie' : "nie dodano zadania", date, time, info, details, link: `OneTodoDetails?id=${id}`, todoId: id, internal_id:internal_id })
 
             } catch (error) {
                 console.log("Error at 'addTodo' - LOG saving logs: " + error)

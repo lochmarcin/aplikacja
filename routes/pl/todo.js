@@ -56,7 +56,8 @@ router.get('/getDone', (req, res) => {
     Todo.findAll({
         raw: true,
         where: {
-            done: true
+            done: true,
+            active: true
         },
         order: [
             ['collect_date', 'DESC']
@@ -117,26 +118,22 @@ router.put("/updateDone/:id", authenticate, async (req, res) => {
             console.log(todos[0])
             res.status(200).send((todos[0] >= 1) ? { TodoToDone: true } : { TodoToDone: false })
 
-            Todo.findOne({
-                where: {
-                    id: req.params.id
-                }
-            }).then(doneTodo => {
 
-                log.doneTodo((todos[0] = 1) ? true : false, req.user.username, req.params.id, doneTodo.internal_id)
-            })
+            log.doneTodo((todos[0] = 1) ? true : false, req.user.username, req.params.id, req.body.internal_id)
+
 
         })
         .catch(err => {
             console.log('Error: ' + err)
             res.status(200).send("ERROR")
-            log.doneTodo(false, req.user.username, req.params.id)
+            log.doneTodo(false, req.user.username, req.params.id, doneTodo.internal_id)
         })
 })
 
 // Aktualizacja jednego todo po id NA DONE FALSE
 router.put("/updateNotDone/:id", authenticate, async (req, res) => {
     console.log("Param: " + req.params.id)
+    // console.log(req.body)
 
     const resultWhoLogin = await User.findOne({
         where: {
@@ -146,10 +143,7 @@ router.put("/updateNotDone/:id", authenticate, async (req, res) => {
     })
     let whologged = `${resultWhoLogin.dataValues.firstname} ${resultWhoLogin.dataValues.lastname}`
 
-
     console.log("kto UPDATE: " + whologged)
-
-    // if (whoDone === whologged) {
 
     await Todo.update(
         {
@@ -166,27 +160,13 @@ router.put("/updateNotDone/:id", authenticate, async (req, res) => {
             // console.log(todos[0])
             res.status(200).send((todos[0] = 1) ? "looks good" : "sometching is wrong")
 
-            Todo.findOne({
-                where: {
-                    id: req.params.id
-                }
-            }).then(notDoneTodo => {
-
-                log.restoreTodo((todos[0] = 1) ? true : false, req.user.username, req.params.id, notDoneTodo.internal_id)
-            })
+            log.restoreTodo((todos[0] = 1) ? true : false, req.user.username, req.params.id, req.body.internal_id)
 
         })
         .catch(err => {
             console.log('Error: ' + err)
             res.sendStatus(400)
         })
-    // }
-    // else{
-    //     console.log("Nichuja nie możesz")
-    //     res.status(200).send({
-    //         'permission':false
-    //     })
-    // }
 })
 
 

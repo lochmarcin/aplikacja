@@ -35,6 +35,8 @@ router.get('/getMyLog', authenticate, (req, res) => {
 
 router.get('/getHistorytodo/:id', authenticate, (req, res) => {
     console.log("/getHistorytodo")
+    console.log("Param: " + req.params.id)
+
 
     Logs.findAll({
         raw: true,
