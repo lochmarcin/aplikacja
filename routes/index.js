@@ -24,6 +24,6 @@ router.use('/logs', log)
 // router.use('/news', news)
 
 
-router.use('/', (req, res)=> res.send("jesteś w indexsach"))
+router.use('/', (req, res)=> res.sendStatus(404))
 
 module.exports = router
