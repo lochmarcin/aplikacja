@@ -49,7 +49,7 @@ router.get('/get', authenticate, (req, res) => {
 })
 
 // GET ALL TODOS WITCH DONE IS FALSE ---------- GET ALL TODOS ---------- GET ALL TODOS 
-router.get('/getDone', (req, res) => {
+router.get('/getDone',authenticate, (req, res) => {
     console.log("get all DONE todos")
     // authenticate(req, res)
 
@@ -107,7 +107,7 @@ router.put("/updateDone/:id", authenticate, async (req, res) => {
     await Todo.update(
         {
             whoDone: fullname,
-            done: "true"
+            done: true
         },
         {
             where: {
@@ -149,7 +149,7 @@ router.put("/updateNotDone/:id", authenticate, async (req, res) => {
         {
             whoRestored: whologged,
             whoDone: null,
-            done: "false"
+            done: false
         },
         {
             where: {
