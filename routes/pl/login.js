@@ -126,8 +126,6 @@ router.post('/login', async (req, res, next) => {
             console.log(dbPassword)
         }
     } catch (e) {
-        
-        
 
         console.log("Login Error" + e)
         res.sendStatus(200)
@@ -170,8 +168,8 @@ router.post('/login', async (req, res, next) => {
             maxAge: 86400000,
             httpOnly: true,
             // ZMIEŃ na lokalu secure: true; sameSite: 'None',
-            // secure: true,
-            // sameSite: 'None'
+            secure: true,
+            sameSite: 'None'
         })
 
         console.log("Wysłałem tokena: " + accessToken)
@@ -234,8 +232,8 @@ router.delete("/logout", authenticate, async (req, res) => {
     res.cookie('JWT', "", {
         httpOnly: true,
         //Odkomentuj poniższe dwie linijki na lokalu 
-        // secure: true,
-        // sameSite: 'None'
+        secure: true,
+        sameSite: 'None'
     });
     res.clearCookie('JWT')
     res.cookie('JWT', null)

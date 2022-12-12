@@ -23,9 +23,9 @@ app.use(
         origin: [
             // "51.83.134.120",
             // "http://51.83.134.120",
-            "http://tebuty.pl",
-            "http://motopres.tebuty.pl",
             "http://localhost:3000",
+            // "http://motopres.marcinloch.pl",
+            "https://motopres.marcinloch.pl",
             "http://127.0.0.1:3000",            
             "http://192.168.1.143:8081",
             "https://localhost:3000",
