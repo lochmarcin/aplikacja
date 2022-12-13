@@ -168,6 +168,7 @@ router.post('/login', async (req, res, next) => {
             maxAge: 86400000,
             httpOnly: true,
             // ZMIEŃ na lokalu secure: true; sameSite: 'None',
+            
             secure: true,
             sameSite: 'None'
         })
