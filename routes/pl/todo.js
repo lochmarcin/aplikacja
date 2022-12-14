@@ -177,7 +177,7 @@ router.post("/addNew", (req, res) => {
     console.log("----------------------------")
     console.log(req.body)
 
-    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year, internal_id, deposit, time_morning, fv } = req.body
+    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year, internal_id, deposit, time_morning, fv } = req.body.data
     let done = false
     let condition = "Nowe / używane"
     let active = true
@@ -267,7 +267,7 @@ router.post("/addReg", (req, res) => {
     console.log("----------------------------")
     console.log(req.body)
 
-    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year, internal_id, deposit, time_morning, fv } = req.body
+    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year, internal_id, deposit, time_morning, fv } = req.body.data
     let done = false
     let condition = "Regenerowane"
     let active = true
