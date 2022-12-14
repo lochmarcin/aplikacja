@@ -271,7 +271,8 @@ router.post("/addReg", (req, res) => {
     let done = false
     let condition = "Regenerowane"
     let active = true
-
+    console.log("Data przed podmiana:")
+    console.log(year,month,day)
     //otrzymywane dane jako liczby
     month = month + ""
     day = day + ""
