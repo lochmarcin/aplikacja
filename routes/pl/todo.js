@@ -172,7 +172,7 @@ router.put("/updateNotDone/:id", authenticate, async (req, res) => {
 
 
 // Dodanie jednego TODO NOWa częśc
-router.post("/addNew", (req, res) => {
+router.post("/addNew", authenticate, (req, res) => {
     console.log("add todo:")
     console.log("----------------------------")
     console.log(req.body)
@@ -262,7 +262,7 @@ router.post("/add", authenticate, async (req, res) => {
 
 
 // Dodanie jednego TODO Regenerowana 
-router.post("/addReg", (req, res) => {
+router.post("/addReg", authenticate, (req, res) => {
     console.log("add todo:")
     console.log("----------------------------")
     console.log(req.body)
@@ -272,7 +272,7 @@ router.post("/addReg", (req, res) => {
     let condition = "Regenerowane"
     let active = true
     console.log("Data przed podmiana:")
-    console.log(year,month,day)
+    console.log(year, month, day)
     //otrzymywane dane jako liczby
     month = month + ""
     day = day + ""
