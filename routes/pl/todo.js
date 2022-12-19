@@ -92,7 +92,8 @@ router.post('/notification', async (req, res) => {
 
 // Aktualizacja jednego todo po id NA DONE TRUE
 router.put("/updateDone/:id", authenticate, async (req, res) => {
-    console.log("Param: " + req.params.id)
+    console.log("Param: " + req.params)
+    console.log("Param ID: " + req.params.id)
     console.log("zalogowany: ", req.user.username)
     const result = await User.findAll({
         where: {
