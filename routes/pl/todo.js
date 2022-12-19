@@ -402,7 +402,7 @@ router.put("/update/:id", async (req, res) => {
 
 
 
-    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year, internal_id, deposit, time_morning, fv } = req.body
+    let { users, company, part, indexx, quantity, price, band_number, note, day, month, year, internal_id, deposit, time_morning, fv } = req.body.data
     let active = true
     let check_day_length = day.toString().length
     let check_month_length = month.toString().length
