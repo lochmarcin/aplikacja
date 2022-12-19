@@ -93,7 +93,7 @@ router.post('/notification', async (req, res) => {
 // Aktualizacja jednego todo po id NA DONE TRUE
 router.put("/updateDone/:id", authenticate, async (req, res) => {
     console.log("Param: " + req.params.id)
-
+    console.log("zalogowany: ", req.user.username)
     const result = await User.findAll({
         where: {
             username: req.user.username
@@ -171,7 +171,7 @@ router.put("/updateNotDone/:id", authenticate, async (req, res) => {
 })
 
 
-// Dodanie jednego TODO NOWa częśc
+// Dodanie jednego TODO NOWa częśc - MOBILE
 router.post("/addNew", authenticate, (req, res) => {
     console.log("add todo:")
     console.log("----------------------------")
@@ -261,7 +261,7 @@ router.post("/add", authenticate, async (req, res) => {
 })
 
 
-// Dodanie jednego TODO Regenerowana 
+// Dodanie jednego TODO Regenerowana - MOBILE
 router.post("/addReg", authenticate, (req, res) => {
     console.log("add todo:")
     console.log("----------------------------")
