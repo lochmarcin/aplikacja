@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const Fcm = require('../../models/fcm')
 
-router.post("/", async (req, res) => {
+router.post("/fcm", async (req, res) => {
     console.log('Rejestrowanie nowego tokena FCM ! ------------------------')
     const fcm_token = req.body.token
     console.log("fcm_token: " + fcm_token)
