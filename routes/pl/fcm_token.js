@@ -3,7 +3,7 @@ const router = express.Router()
 const Fcm = require('../../models/fcm')
 
 router.post("/", async (req, res) => {
-    console.log('Rejestrowanie nowego tokena FCM')
+    console.log('Rejestrowanie nowego tokena FCM ! ------------------------')
     const fcm_token = req.body.token
     console.log("fcm_token: " + fcm_token)
     if (fcm_token != undefined) {
@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
                 }
             });
             if (created) {
-                console.log("Dodano nowy token: " + fcm.token);
+                console.log("Dodano nowy FCM token: " + fcm.token);
                 res.sendStatus(200)
                 return
 
@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
         }
     }
     else {
-        console.log("Brak fcm tokena")
+        console.log("Brak FCM tokena")
         res.sendStatus(200)
         return
     }
