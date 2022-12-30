@@ -1,5 +1,5 @@
 var admin = require("firebase-admin");
-var serviceAccount = require("../motopres-56f80-firebase-adminsdk-rjc35-1ea0d56603.json");
+var serviceAccount = require("../motopresv2-firebase-adminsdk-8htyu-71fe827ccb.json");
 // const fcms = require('../services/arrayOfFcm')
 const Fcm = require('../models/fcm')
 
