@@ -52,4 +52,23 @@ router.post("/fcm", async (req, res) => {
 
 })
 
+router.get("/deleteAllFcm", async (req, res) => {
+    console.log('DELETE ALL FCM TOKENS !!! ------------------------')
+    // const fcm_token = req.body.token
+    // console.log("fcm_token: " + fcm_token)
+        try {
+            await Fcm.destroy({
+                truncate: true                
+            });
+            
+        } catch (err) {
+            console.log("FCM tokens delete Error: " + err)
+            res.sendStatus(200)
+            return
+        }
+    
+
+})
+
+
 module.exports = router
