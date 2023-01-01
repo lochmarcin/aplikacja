@@ -178,7 +178,8 @@ router.post("/check", async (req, res) => {
 
     try {
 
-        await File.max('wersja', {
+        await File.max('wersja', 
+        {
             where: {
                 os: req.body.os
             }
@@ -187,7 +188,7 @@ router.post("/check", async (req, res) => {
                 console.log(file)
                 req.body.version == file ? console.log(true) : console.log(false)
                 // if (req.body.version == file) {
-                if (req.body.version == file) {
+                if (file <= req.body.version) {
                     res.status(200).send({
                         update: false
                     })
