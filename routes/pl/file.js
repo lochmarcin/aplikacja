@@ -259,7 +259,7 @@ router.put("/updateActualFile/:id", async (req, res) => {
 })
 
 //Download Main apk 
-router.get("/download", async (req, res) => {
+router.get("/download/:os", async (req, res) => {
     // console.log("Param: " + req.params.id)
     console.log(" --------- !!!! POBIERANIE AKTUALIZACJI !!!! -----------")
     // console.log("OS: " + req.body.os)
