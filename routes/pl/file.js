@@ -259,10 +259,10 @@ router.put("/updateActualFile/:id", async (req, res) => {
 })
 
 //Download Main apk 
-router.post("/download", async (req, res) => {
+router.get("/download", async (req, res) => {
     // console.log("Param: " + req.params.id)
     console.log(" --------- !!!! POBIERANIE AKTUALIZACJI !!!! -----------")
-    console.log("OS: " + req.body.os)
+    // console.log("OS: " + req.body.os)
     console.log("Download FILE ")
     try {
         const path = await dirname()
@@ -270,7 +270,7 @@ router.post("/download", async (req, res) => {
         File.findOne({
             raw: true,
             where: {
-                os: req.body.os,
+                os: "android",
                 actual: true
             }
         })
