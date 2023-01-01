@@ -36,7 +36,7 @@ const firebaseNotifi = async (notification) => {
                 android: {
                     notification: {
                         icon: 'https://firebasestorage.googleapis.com/v0/b/motopres-9e852.appspot.com/o/ikona.png?alt=media&token=e1466eb4-17d3-4c85-a497-5b8a2377c291',
-                        color: '#7e55c3'
+                        color: '#BA2727'
                     }
                 }
             }).then((msg) => {

@@ -60,10 +60,10 @@ router.get("/deleteAllFcm", async (req, res) => {
             await Fcm.destroy({
                 truncate: true                
             });
-            
+            res.sendStatus(200)
         } catch (err) {
             console.log("FCM tokens delete Error: " + err)
-            res.sendStatus(200)
+            res.sendStatus(300)
             return
         }
     

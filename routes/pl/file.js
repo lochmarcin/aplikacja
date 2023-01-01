@@ -130,7 +130,7 @@ router.post("/addApk", upload.single('apk'), async (req, res) => {
                     try {
 
                         File.create({
-                            wersja, url, actual
+                            wersja, url, actual, os: req.body.os
                         })
                             .then(file => {
                                 file.dataValues['sendStatus'] = "Wysłano - 100"
@@ -174,9 +174,15 @@ router.post("/addApk", upload.single('apk'), async (req, res) => {
 // Mobile SEND FILE TO DOWNLOAD
 router.post("/check", async (req, res) => {
     console.log("version: " + req.body.version)
+    console.log("OS: " + req.body.os)
+
     try {
 
-        File.max('wersja')
+        await File.max('wersja', {
+            where: {
+                os: req.body.os
+            }
+        })
             .then(file => {
                 console.log(file)
                 req.body.version == file ? console.log(true) : console.log(false)
@@ -253,7 +259,7 @@ router.put("/updateActualFile/:id", async (req, res) => {
 })
 
 //Download Main apk 
-router.get("/downloadMain", async (req, res) => {
+router.get("/downloadAndroid", async (req, res) => {
     console.log("Param: " + req.params.id)
     console.log("Download FILE ")
     try {
@@ -262,6 +268,37 @@ router.get("/downloadMain", async (req, res) => {
         File.findOne({
             raw: true,
             where: {
+                os: 'android',
+                actual: true
+            }
+        })
+            .then(todo => {
+                console.log(todo.url)
+                const file = `${path}/uploads/${todo.url}`;
+                res.status(200).download(file)
+            })
+            .catch(err => {
+                console.log('Error: ' + err)
+                res.sendStatus(400)
+            })
+
+        // Set disposition and send it.
+    } catch (err) {
+        console.log("Send file ERROR: " + err)
+    }
+})
+
+//Download Main apk 
+router.get("/downloadApple", async (req, res) => {
+    console.log("Param: " + req.params.id)
+    console.log("Download FILE ")
+    try {
+        const path = await dirname()
+
+        File.findOne({
+            raw: true,
+            where: {
+                os: 'ios',
                 actual: true
             }
         })
@@ -285,7 +322,7 @@ router.get("/downloadMain", async (req, res) => {
 router.delete("/deleteFile/:id", async (req, res) => {
     console.log("DELETE FILE ")
     console.log("Param: " + req.params.id)
-  
+
     try {
         const path = await dirname()
 

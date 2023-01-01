@@ -19,6 +19,9 @@ const File = db.define('update', {
     },
     actual: {
         type: Sequelize.BOOLEAN
+    },
+    os: {
+        type: Sequelize.STRING
     }
 })
 
