@@ -186,9 +186,8 @@ router.post("/check", async (req, res) => {
             .then(file => {
                 console.log(file)
                 req.body.version == file ? console.log(true) : console.log(false)
-
                 // if (req.body.version == file) {
-                if (req.body.version == 100) {
+                if (req.body.version == file) {
                     res.status(200).send({
                         update: false
                     })
@@ -257,6 +256,39 @@ router.put("/updateActualFile/:id", async (req, res) => {
         console.log("Error on /updateActualFile/:id = " + err)
     }
 })
+
+//Download Main apk 
+router.post("/download", async (req, res) => {
+    console.log("Param: " + req.params.id)
+    console.log("OS: " + req.body.os)
+    console.log("Download FILE ")
+    try {
+        const path = await dirname()
+
+        File.findOne({
+            raw: true,
+            where: {
+                os: req.body.os,
+                actual: true
+            }
+        })
+            .then(todo => {
+                console.log(todo.url)
+                const file = `${path}/uploads/${todo.url}`;
+                res.status(200).download(file)
+            })
+            .catch(err => {
+                console.log('Error: ' + err)
+                res.sendStatus(400)
+            })
+
+        // Set disposition and send it.
+    } catch (err) {
+        console.log("Send file ERROR: " + err)
+    }
+})
+
+
 
 //Download Main apk 
 router.get("/downloadAndroid", async (req, res) => {
