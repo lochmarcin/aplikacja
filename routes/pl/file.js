@@ -262,7 +262,7 @@ router.put("/updateActualFile/:id", async (req, res) => {
 router.get("/download/:os", async (req, res) => {
     // console.log("Param: " + req.params.id)
     console.log(" --------- !!!! POBIERANIE AKTUALIZACJI !!!! -----------")
-    // console.log("OS: " + req.body.os)
+    console.log("OS: " + req.params.os)
     console.log("Download FILE ")
     try {
         const path = await dirname()
@@ -270,11 +270,13 @@ router.get("/download/:os", async (req, res) => {
         File.findOne({
             raw: true,
             where: {
-                os: "android",
+                os: req.params.os,
                 actual: true
             }
         })
             .then(todo => {
+                // console.log(todo)
+                
                 console.log(todo.url)
                 const file = `${path}/uploads/${todo.url}`;
                 res.status(200).download(file)
@@ -307,6 +309,9 @@ router.get("/downloadAndroid", async (req, res) => {
             }
         })
             .then(todo => {
+                if(todo==null)
+                    res.sendStatus(200)
+
                 console.log(todo.url)
                 const file = `${path}/uploads/${todo.url}`;
                 res.status(200).download(file)
