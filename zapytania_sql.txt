@@ -20,6 +20,12 @@ cp -R /home/marcin/front_motopres/build/* /var/www/motopres
 fuser -k 5000/tcp
 rm -r motopres/*
 
+Redis:
+sudo service redis-server start
+redis-cli 
+127.0.0.1:6379> ping
+PONG
+
 
 
 Szukajka: co zrobił 

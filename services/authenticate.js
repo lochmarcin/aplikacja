@@ -6,9 +6,9 @@ function authenticate(req, res, next) {
     console.log(req.cookies)
     if (token == '' || token == null){
         console.log("token ''")
-        return res.status(201).send({
+        return res.status(201).json({
             logged: false,
-            message: "Unauthorized"
+            authenticated: false
         })
     }
     else {
@@ -16,7 +16,9 @@ function authenticate(req, res, next) {
             if (err) {
                 console.log("coś się pojebało")
                 // return next()
-                return res.status(200).send({
+
+                // return res.status(200).send({
+                return res.status(201).send({
                     logged: false
                 })
             }

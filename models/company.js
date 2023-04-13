@@ -14,24 +14,12 @@ const Company = db.define('companies',{
     name_comp: {
         type: Sequelize.STRING
     },
-    town: {
-        type: Sequelize.STRING
+    createdAt: {
+        type: Sequelize.DATE
     },
-    street: {
-        type: Sequelize.STRING
-    },
-    number_house: {
-        type: Sequelize.STRING
-    },
-    post_code: {
-        type: Sequelize.STRING
-    },
-    phone: {
-        type: Sequelize.STRING
-    },
-    email: {
-        type: Sequelize.STRING
-    }
+    updatedAt: {
+        type: Sequelize.DATE
+    }    
 })
 
 module.exports = Company

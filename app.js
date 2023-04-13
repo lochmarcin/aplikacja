@@ -8,6 +8,8 @@ const path = require('path');
 const Log = require('./services/logs')
 
 
+
+
 require('dotenv').config({ path: '.env' })
 
 const port = 5000
@@ -17,6 +19,8 @@ const app = express()
 app.use(bodyParser.json({ limit: '100mb' }))
 app.use(bodyParser.urlencoded({ extended: true, limit: '100mb' }))
 app.use(cookieParser())
+
+
 
 app.use(
     cors({

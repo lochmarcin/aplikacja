@@ -18,6 +18,26 @@ const authenticate = require('./../../services/authenticate')
 const Log = require('../../services/logs')
 const log = new Log
 
+const Cache = require('./../../services/cacheTodos')
+const Redis = new Cache
+
+//REDIS 
+const redis = require('redis')
+const DEFAULT_EXPIRATION = 660
+// const redisClient = Redis.createClient()
+
+let client;
+
+(async () => {
+    client = redis.createClient();
+
+    client.on("error", (error) => console.error(`Error : ${error}`));
+
+    await client.connect();
+})();
+
+
+
 
 // const fcms = require('../../services/arrayOfFcm')
 // var admin = require("firebase-admin");
@@ -27,26 +47,39 @@ const log = new Log
 
 
 // GET ALL TODOS WITCH DONE IS FALSE ---------- GET ALL TODOS ---------- GET ALL TODOS 
-router.get('/get', authenticate, (req, res) => {
-
+router.get('/get', authenticate, async (req, res) => {
     console.log("get all todos")
-    Todo.findAll({
-        raw: true,
-        where: {
-            done: false,
-            active: true
-        },
-        order: [
-            ['collect_date', 'ASC']
-        ]
-    })
-        .then(todo => {
-            res.send(todo)
+    
+    if(await client.GET('todos') != null){
+        console.log("Send cached todos !")
+        const cachedTodos = await client.GET('todos')
+        res.send(JSON.parse(cachedTodos))
+    }
+    else{
+        Todo.findAll({
+            raw: true,
+            where: {
+                done: false,
+                active: true
+            },
+            order: [
+                ['collect_date', 'ASC']
+            ]
         })
-        .catch(err => {
-            console.log('Error: ' + err)
-            res.sendStatus(400)
-        })
+            .then(async (todo) => {
+                // await client.set('todos', JSON.stringify(todo))
+                const cache = await client.SETEX('todos', DEFAULT_EXPIRATION, JSON.stringify(todo))
+
+                if (cache) {
+                    console.log("Todos cached!")
+                }
+                res.send(todo)
+            })
+            .catch(err => {
+                console.log('Error: ' + err)
+                res.sendStatus(400)
+            })
+    }
 })
 
 // GET ALL TODOS WITCH DONE IS FALSE ---------- GET ALL TODOS ---------- GET ALL TODOS 
@@ -254,6 +287,8 @@ router.post("/add", authenticate, async (req, res) => {
         firebaseNotifi(notifi)
 
         log.addTodo(true, req.user.username, condition, company, part, indexx, quantity, price, band_number, note, collect_date, internal_id, deposit, time_morning, fv, result.dataValues.id)
+
+        Redis.cacheTodos()
 
     } catch (err) {
         console.log("Error: " + err)

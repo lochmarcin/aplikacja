@@ -90,6 +90,7 @@ router.post("/addApk", upload.single('apk'), async (req, res) => {
 
     // https://stackoverflow.com/questions/56464707/how-to-redirect-back-to-a-page-when-wrong-file-type-has-been-uploaded-via-multer
 
+    console.log(req)
     try {
         fs.access('./../uploads', (err) => {
             if (err) {
@@ -400,7 +401,8 @@ router.get("/download/:id", async (req, res) => {
             }
         })
             .then(file => {
-                console.log(file.url)
+                console.log(file)                
+                // console.log(file.url)
                 const download_file = `${path}/uploads/${file.url}`;
                 res.status(200).download(download_file)
             })
