@@ -16,7 +16,7 @@ select * from todo
 -- DELETE FROM company where id=1
 
 
-cp -R /home/marcin/front_motopres/build/* /var/www/motopres
+cp -R /home/marcin/Desktop/front_motopres/build/* /var/www/motopres
 fuser -k 5000/tcp
 rm -r motopres/*
 
