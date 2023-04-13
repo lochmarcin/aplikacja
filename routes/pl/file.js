@@ -260,38 +260,38 @@ router.put("/updateActualFile/:id", async (req, res) => {
 })
 
 //Download Main apk 
-router.get("/download/:os", async (req, res) => {
-    // console.log("Param: " + req.params.id)
-    console.log(" --------- !!!! POBIERANIE AKTUALIZACJI !!!! -----------")
-    console.log("OS: " + req.params.os)
-    console.log("Download FILE ")
-    try {
-        const path = await dirname()
+// router.get("/download/:os", async (req, res) => {
+//     // console.log("Param: " + req.params.id)
+//     console.log(" --------- !!!! POBIERANIE AKTUALIZACJI !!!! -----------")
+//     console.log("OS: " + req.params.os)
+//     console.log("Download FILE ")
+//     try {
+//         const path = await dirname()
 
-        File.findOne({
-            raw: true,
-            where: {
-                os: req.params.os,
-                actual: true
-            }
-        })
-            .then(todo => {
-                // console.log(todo)
+//         File.findOne({
+//             raw: true,
+//             where: {
                 
-                console.log(todo.url)
-                const file = `${path}/uploads/${todo.url}`;
-                res.status(200).download(file)
-            })
-            .catch(err => {
-                console.log('Error: ' + err)
-                res.sendStatus(400)
-            })
+//                 actual: true
+//             }
+//         })
+//             .then(todo => {
+//                 // console.log(todo)
+                
+//                 console.log(todo.url)
+//                 const file = `${path}/uploads/${todo.url}`;
+//                 res.status(200).download(file)
+//             })
+//             .catch(err => {
+//                 console.log('Error: ' + err)
+//                 res.sendStatus(400)
+//             })
 
-        // Set disposition and send it.
-    } catch (err) {
-        console.log("Send file ERROR: " + err)
-    }
-})
+//         // Set disposition and send it.
+//     } catch (err) {
+//         console.log("Send file ERROR: " + err)
+//     }
+// })
 
 
 
@@ -305,7 +305,6 @@ router.get("/downloadAndroid", async (req, res) => {
         File.findOne({
             raw: true,
             where: {
-                os: 'android',
                 actual: true
             }
         })
@@ -329,34 +328,34 @@ router.get("/downloadAndroid", async (req, res) => {
 })
 
 //Download Main apk 
-router.get("/downloadApple", async (req, res) => {
-    console.log("Param: " + req.params.id)
-    console.log("Download FILE ")
-    try {
-        const path = await dirname()
+// router.get("/downloadApple", async (req, res) => {
+//     console.log("Param: " + req.params.id)
+//     console.log("Download FILE ")
+//     try {
+//         const path = await dirname()
 
-        File.findOne({
-            raw: true,
-            where: {
-                os: 'ios',
-                actual: true
-            }
-        })
-            .then(todo => {
-                console.log(todo.url)
-                const file = `${path}/uploads/${todo.url}`;
-                res.status(200).download(file)
-            })
-            .catch(err => {
-                console.log('Error: ' + err)
-                res.sendStatus(400)
-            })
+//         File.findOne({
+//             raw: true,
+//             where: {
+//                 os: 'ios',
+//                 actual: true
+//             }
+//         })
+//             .then(todo => {
+//                 console.log(todo.url)
+//                 const file = `${path}/uploads/${todo.url}`;
+//                 res.status(200).download(file)
+//             })
+//             .catch(err => {
+//                 console.log('Error: ' + err)
+//                 res.sendStatus(400)
+//             })
 
-        // Set disposition and send it.
-    } catch (err) {
-        console.log("Send file ERROR: " + err)
-    }
-})
+//         // Set disposition and send it.
+//     } catch (err) {
+//         console.log("Send file ERROR: " + err)
+//     }
+// })
 
 // Delete file 
 router.delete("/deleteFile/:id", async (req, res) => {
