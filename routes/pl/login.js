@@ -52,7 +52,7 @@ router.get("/me", authenticate, async (req, res) => {
 
 
 
-router.post("/register", async (req, res) => {
+router.post("/register", authenicate, async (req, res) => {
     const { firstname, lastname, username, password, isEditor, isAdmin } = req.body
     console.log(req.body)
 
