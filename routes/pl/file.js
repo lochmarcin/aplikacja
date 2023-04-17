@@ -179,12 +179,12 @@ router.post("/check", async (req, res) => {
 
     try {
 
-        await File.max('wersja', 
-        {
-            where: {
-                os: req.body.os
-            }
-        })
+        await File.max('wersja',
+            {
+                where: {
+                    os: req.body.os
+                }
+            })
             .then(file => {
                 console.log(file)
                 req.body.version == file ? console.log(true) : console.log(false)
@@ -271,13 +271,13 @@ router.put("/updateActualFile/:id", async (req, res) => {
 //         File.findOne({
 //             raw: true,
 //             where: {
-                
+
 //                 actual: true
 //             }
 //         })
 //             .then(todo => {
 //                 // console.log(todo)
-                
+
 //                 console.log(todo.url)
 //                 const file = `${path}/uploads/${todo.url}`;
 //                 res.status(200).download(file)
@@ -309,12 +309,13 @@ router.get("/downloadAndroid", async (req, res) => {
             }
         })
             .then(todo => {
-                if(todo==null)
+                if (todo == null)
                     res.sendStatus(200)
 
-                console.log(todo.url)
-                const file = `${path}/uploads/${todo.url}`;
-                res.status(200).download(file)
+                // console.log(todo.url)
+                let file = `${path}/uploads/${todo.url}`;
+                
+                res.sendFile(file, todo.url)
             })
             .catch(err => {
                 console.log('Error: ' + err)
@@ -328,34 +329,7 @@ router.get("/downloadAndroid", async (req, res) => {
 })
 
 //Download Main apk 
-// router.get("/downloadApple", async (req, res) => {
-//     console.log("Param: " + req.params.id)
-//     console.log("Download FILE ")
-//     try {
-//         const path = await dirname()
-
-//         File.findOne({
-//             raw: true,
-//             where: {
-//                 os: 'ios',
-//                 actual: true
-//             }
-//         })
-//             .then(todo => {
-//                 console.log(todo.url)
-//                 const file = `${path}/uploads/${todo.url}`;
-//                 res.status(200).download(file)
-//             })
-//             .catch(err => {
-//                 console.log('Error: ' + err)
-//                 res.sendStatus(400)
-//             })
-
-//         // Set disposition and send it.
-//     } catch (err) {
-//         console.log("Send file ERROR: " + err)
-//     }
-// })
+// 
 
 // Delete file 
 router.delete("/deleteFile/:id", async (req, res) => {
@@ -400,7 +374,7 @@ router.get("/download/:id", async (req, res) => {
             }
         })
             .then(file => {
-                console.log(file)                
+                console.log(file)
                 // console.log(file.url)
                 const download_file = `${path}/uploads/${file.url}`;
                 res.status(200).download(download_file)
