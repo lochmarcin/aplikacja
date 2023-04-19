@@ -21,7 +21,7 @@ class Cache {
 
     async getCachedTodos() {
         const todos = await client.GET('todos')
-        if (todos != null){
+        if (todos != null || todos != '[]'){
             console.log("-> HIT Cached todos")
             return JSON.parse(todos)
         }
@@ -30,8 +30,8 @@ class Cache {
     }
 
     async getCachedDoneTodos() {
-        const todos = await client.GET('todos')
-        if (todos != null){
+        const todos = await client.GET('doneTodos')
+        if (todos != null || todos != '[]'){
             console.log("-> HIT Cached DONE todos")
             return JSON.parse(todos)
         }
