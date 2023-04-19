@@ -99,6 +99,12 @@ router.get('/getDone', authenticate, (req, res) => {
     })
         .then(todo => {
             res.status(200).send(todo)
+            const cache = client.SETEX('todosDone', DEFAULT_EXPIRATION, JSON.stringify(todo))
+
+            if (cache) {
+                console.log("Done todos cached!")
+            }
+            res.send(todo)
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -156,7 +162,7 @@ router.put("/updateDone/:id", authenticate, async (req, res) => {
 
             log.doneTodo((todos[0] = 1) ? true : false, req.user.username, req.params.id, req.body.internal_id)
 
-
+            Redis.cacheTodos()
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -197,6 +203,7 @@ router.put("/updateNotDone/:id", authenticate, async (req, res) => {
 
             log.restoreTodo((todos[0] = 1) ? true : false, req.user.username, req.params.id, req.body.internal_id)
 
+            Redis.cacheTodos()
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -242,6 +249,8 @@ router.post("/addNew", authenticate, (req, res) => {
             // console.log("Powinoo wysłać")
 
             log.addTodo(true, req.user.username, condition, company, part, indexx, quantity, price, band_number, note, collect_date, internal_id, deposit, time_morning, fv, todo.dataValues.id)
+        
+            Redis.cacheTodos()
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -333,6 +342,8 @@ router.post("/addReg", authenticate, (req, res) => {
             res.sendStatus(200)
 
             log.addTodo(true, req.user.username, condition, company, part, indexx, quantity, price, band_number, note, collect_date, internal_id, deposit, time_morning, fv, todo.dataValues.id)
+            
+            Redis.cacheTodos()
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -412,6 +423,7 @@ router.put("/updateWeb/:id", authenticate, async (req, res) => {
 
                     console.log(update[0])
                     log.updateTodo(true, req.user.username, todo, req.body, param)
+                    Redis.cacheTodos()
 
                 })
                 .catch(err => {
@@ -480,6 +492,7 @@ router.put("/update/:id", async (req, res) => {
                 firebaseNotifi(notifi)
             }
             res.status(200).send((todos[0] = 1) ? true : false)
+            Redis.cacheTodos()
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -505,6 +518,8 @@ router.put("/delete/:id", authenticate, async (req, res) => {
                 deleted: true
             })
             log.deleteTodo(true, req.user.username, param, req.body.internal_id)
+
+            Redis.cacheTodos()
         })
         .catch(err => {
             console.log('Error: ' + err)
