@@ -22,22 +22,27 @@ const Cache = require('./../../services/cacheTodos')
 const Redis = new Cache
 
 //REDIS 
-const redis = require('redis')
-const DEFAULT_EXPIRATION = 660
+// const redis = require('redis')
+// const DEFAULT_EXPIRATION = 660
 // const redisClient = Redis.createClient()
 
-let client;
+// let client;
 
-(async () => {
-    client = redis.createClient();
+// (async () => {
+//     client = redis.createClient();
 
-    client.on("error", (error) => console.error(`Error : ${error}`));
+//     client.on("error", (error) => console.error(`Error : ${error}`));
 
-    await client.connect();
-})();
+//     await client.connect();
+// })();
 
 
-
+router.get('/cacheTodos', async (req, res) => {
+    res.status(200).send(await Redis.getCachedTodos())
+})
+router.get('/cacheDoneTodos', async (req, res) => {
+    res.status(200).send(await Redis.getCachedDoneTodos())
+})
 
 // const fcms = require('../../services/arrayOfFcm')
 // var admin = require("firebase-admin");
@@ -49,13 +54,18 @@ let client;
 // GET ALL TODOS WITCH DONE IS FALSE ---------- GET ALL TODOS ---------- GET ALL TODOS 
 router.get('/get', authenticate, async (req, res) => {
     console.log("get all todos")
-    
-    if(await client.GET('todos') != null){
+
+    // if(await client.GET('todos') != null){
+    //     console.log("Send cached todos !")
+    //     const cachedTodos = await client.GET('todos')
+    //     res.send(JSON.parse(cachedTodos))
+    // }
+    const cachedTodos = await Redis.getCachedTodos()
+    if (cachedTodos != null) {
         console.log("Send cached todos !")
-        const cachedTodos = await client.GET('todos')
-        res.send(JSON.parse(cachedTodos))
+        res.send(cachedTodos)
     }
-    else{
+    else {
         Todo.findAll({
             raw: true,
             where: {
@@ -68,11 +78,12 @@ router.get('/get', authenticate, async (req, res) => {
         })
             .then(async (todo) => {
                 // await client.set('todos', JSON.stringify(todo))
-                const cache = await client.SETEX('todos', DEFAULT_EXPIRATION, JSON.stringify(todo))
+                // const cache = await client.SETEX('todos', DEFAULT_EXPIRATION, JSON.stringify(todo))
 
-                if (cache) {
-                    console.log("Todos cached!")
-                }
+                // if (cache) {
+                //     console.log("Todos cached - todo!")
+                // }
+                Redis.cacheTodos()
                 res.send(todo)
             })
             .catch(err => {
@@ -83,33 +94,37 @@ router.get('/get', authenticate, async (req, res) => {
 })
 
 // GET ALL TODOS WITCH DONE IS FALSE ---------- GET ALL TODOS ---------- GET ALL TODOS 
-router.get('/getDone', authenticate, (req, res) => {
+router.get('/getDone', authenticate, async (req, res) => {
     console.log("get all DONE todos")
     // authenticate(req, res)
 
-    Todo.findAll({
-        raw: true,
-        where: {
-            done: true,
-            active: true
-        },
-        order: [
-            ['collect_date', 'DESC']
-        ]
-    })
-        .then(todo => {
-            res.status(200).send(todo)
-            const cache = client.SETEX('todosDone', DEFAULT_EXPIRATION, JSON.stringify(todo))
+    const cachedTodos = await Redis.getCachedDoneTodos()
+    if (cachedTodos != null) {
+        console.log("Send cached DONE Todos !")
+        res.send(cachedTodos)
+    }
+    else {
+        Todo.findAll({
+            raw: true,
+            where: {
+                done: true,
+                active: true
+            },
+            order: [
+                ['collect_date', 'DESC']
+            ]
+        })
+            .then(doneTodo => {
+                Redis.cacheDoneTodos()
+                res.status(200).send(doneTodo)
 
-            if (cache) {
-                console.log("Done todos cached!")
-            }
-            res.send(todo)
-        })
-        .catch(err => {
-            console.log('Error: ' + err)
-            res.sendStatus(400)
-        })
+                // res.send(todo)
+            })
+            .catch(err => {
+                console.log('Error: ' + err)
+                res.sendStatus(400)
+            })
+    }
 })
 
 
@@ -163,6 +178,7 @@ router.put("/updateDone/:id", authenticate, async (req, res) => {
             log.doneTodo((todos[0] = 1) ? true : false, req.user.username, req.params.id, req.body.internal_id)
 
             Redis.cacheTodos()
+            Redis.cacheDoneTodos()
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -204,6 +220,7 @@ router.put("/updateNotDone/:id", authenticate, async (req, res) => {
             log.restoreTodo((todos[0] = 1) ? true : false, req.user.username, req.params.id, req.body.internal_id)
 
             Redis.cacheTodos()
+            Redis.cacheDoneTodos()
         })
         .catch(err => {
             console.log('Error: ' + err)
@@ -249,7 +266,7 @@ router.post("/addNew", authenticate, (req, res) => {
             // console.log("Powinoo wysłać")
 
             log.addTodo(true, req.user.username, condition, company, part, indexx, quantity, price, band_number, note, collect_date, internal_id, deposit, time_morning, fv, todo.dataValues.id)
-        
+
             Redis.cacheTodos()
         })
         .catch(err => {
@@ -342,7 +359,7 @@ router.post("/addReg", authenticate, (req, res) => {
             res.sendStatus(200)
 
             log.addTodo(true, req.user.username, condition, company, part, indexx, quantity, price, band_number, note, collect_date, internal_id, deposit, time_morning, fv, todo.dataValues.id)
-            
+
             Redis.cacheTodos()
         })
         .catch(err => {
@@ -423,6 +440,7 @@ router.put("/updateWeb/:id", authenticate, async (req, res) => {
 
                     console.log(update[0])
                     log.updateTodo(true, req.user.username, todo, req.body, param)
+
                     Redis.cacheTodos()
 
                 })
@@ -519,7 +537,7 @@ router.put("/delete/:id", authenticate, async (req, res) => {
             })
             log.deleteTodo(true, req.user.username, param, req.body.internal_id)
 
-            Redis.cacheTodos()
+            Redis.cacheDoneTodos()
         })
         .catch(err => {
             console.log('Error: ' + err)
